@@ -13,19 +13,62 @@
 </head>
 
 <body>
-	{{template "button" .}}
+	<form id="form">
+		{{template "essay" .EssaySection}}
+
+		{{template "sections" .VSections}}
+		{{template "sections" .QSections}}
+		{{template "sections" .ESections}}
+
+		<button type="submit">Submit</button>
+	</form>
+
+	<script>
+		const form = document.querySelector("#form");
+		form.addEventListener("submit", (e) => {
+			e.preventDefault();
+			const formData = new FormData(form);
+			console.log(Object.fromEntries(formData.entries()));
+		});
+	</script>
 </body>
 
 </html>
 
 {{end}}
 
-{{define "button"}}
-<button hx-post="/clicked" hx-target="#count">
-	Click Me: <span id="count">{{template "count" .}}</span>
-</button>
+{{define "essay"}}
+
+<fieldset>
+	<p>{{.}}</p>
+
+	<textarea name="EssaySection"></textarea>
+</fieldset>
+
 {{end}}
 
-{{define "count"}}
-{{.Count}}
+{{define "sections"}}
+
+{{range $i, $s := .}}
+
+<div>
+	<h2>Section</h2>
+
+	{{range $j, $q := $s.Questions}}
+
+	<fieldset>
+		<legend>{{$q.Content}}</legend>
+
+		{{range $k, $o := $q.Options}}
+		<input id="{{$s.Kind}}Sections[{{$i}}].Questions[{{$j}}].Options[{{$k}}]"
+			name="{{$s.Kind}}Sections[{{$i}}].Questions[{{$k}}]" type="radio" value="{{$k}}">
+		<label for="{{$s.Kind}}Sections[{{$i}}].Questions[{{$j}}].Options[{{$k}}]">{{$o}}</label>
+		{{end}}
+	</fieldset>
+
+	{{end}}
+</div>
+
+{{end}}
+
 {{end}}
