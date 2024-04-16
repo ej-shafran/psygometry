@@ -6,6 +6,7 @@
 - [ ] Render test data in the client, without sending correct answers
 - [ ] Create data structure for test answers
 - [ ] Send test answers to server
+- [ ] Calculate static scores
 - [ ] Create basic AI package that grades essays
 - [ ] Respond with grade, or possibly grade-range
 - [ ] Connect to a database
