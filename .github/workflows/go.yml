@@ -12,8 +12,16 @@ on:
       - "main"
 
 jobs:
-  psygometry:
+  build:
+    name: "Build & Test"
+
     runs-on: "ubuntu-latest"
+
+    strategy:
+      matrix:
+        dir:
+          - "./cmd/psygometry"
+
     steps:
     - name: "Checkout"
       uses: "actions/checkout@v4"
@@ -24,14 +32,16 @@ jobs:
         go-version: "1.19"
 
     - name: "Install Dependencies"
+      working-directory: "${{ matrix.dir }}"
       run: |
         go get .
-      working-directory: "./cmd/psygometry"
 
     - name: "Build"
+      working-directory: "${{ matrix.dir }}"
       run: |
-        go build -v ./cmd/psygometry
+        go build -v .
 
     - name: "Test"
+      working-directory: "${{ matrix.dir }}"
       run: |
-        go test -v ./cmd/psygometry
+        go test -v .
