@@ -1,7 +1,7 @@
 # Project TODOs
 
 - [x] Create a basic HTMX website
-- [ ] Create data structure for test
+- [x] Create data structure for test
 - [ ] Create fake data
 - [ ] Render test data in the client, without sending correct answers
 - [ ] Create data structure for test answers
