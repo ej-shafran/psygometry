@@ -5,10 +5,10 @@ name: "Go"
 
 on:
   push:
-    branches: 
+    branches:
       - "main"
   pull_request:
-    branches: 
+    branches:
       - "main"
 
 jobs:
@@ -23,25 +23,26 @@ jobs:
           - "./cmd/psygometry"
 
     steps:
-    - name: "Checkout"
-      uses: "actions/checkout@v4"
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
 
-    - name: "Set up Go"
-      uses: "actions/setup-go@v5"
-      with:
-        go-version: "1.19"
+      - name: "Set up Go"
+        uses: "actions/setup-go@v5"
+        with:
+          go-version: "1.19"
+        working-directory: "${{ matrix.dir }}"
 
-    - name: "Install Dependencies"
-      working-directory: "${{ matrix.dir }}"
-      run: |
-        go get .
+      - name: "Install Dependencies"
+        working-directory: "${{ matrix.dir }}"
+        run: |
+          go get .
 
-    - name: "Build"
-      working-directory: "${{ matrix.dir }}"
-      run: |
-        go build -v .
+      - name: "Build"
+        working-directory: "${{ matrix.dir }}"
+        run: |
+          go build -v .
 
-    - name: "Test"
-      working-directory: "${{ matrix.dir }}"
-      run: |
-        go test -v .
+      - name: "Test"
+        working-directory: "${{ matrix.dir }}"
+        run: |
+          go test -v .
