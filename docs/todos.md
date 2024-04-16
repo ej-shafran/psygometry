@@ -7,7 +7,9 @@
 - [x] Create data structure for test answers
 - [x] Send test answers to server
 - [ ] Parse answers from request
+    - [ ] Test
 - [ ] Calculate static scores
+    - [ ] Test
 - [ ] Create basic AI package that grades essays
 - [ ] Respond with grade, or possibly grade-range
 - [ ] Properly paginate between sections
