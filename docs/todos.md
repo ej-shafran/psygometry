@@ -2,7 +2,7 @@
 
 - [x] Create a basic HTMX website
 - [x] Create data structure for test
-- [ ] Create fake data
+- [x] Create fake data
 - [ ] Render test data in the client, without sending correct answers
 - [ ] Create data structure for test answers
 - [ ] Send test answers to server
