@@ -18,6 +18,13 @@ type PsychometryTest struct {
 	ESections    [2]Section
 }
 
+type PsychometryAnswers struct {
+	EssaySection string
+	VSections    [2][]int
+	QSections    [2][]int
+	ESections    [2][]int
+}
+
 func generateFakeData() PsychometryTest {
 	test := PsychometryTest{
 		EssaySection: "Please write an essay on the importance of storytelling in modern cinema.",
