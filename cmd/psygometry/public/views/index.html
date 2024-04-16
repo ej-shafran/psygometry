@@ -13,7 +13,7 @@
 </head>
 
 <body>
-	<form id="form">
+	<form hx-post="/answers" hx-swap="none" hx-on::after-request="this.reset()">
 		{{template "essay" .EssaySection}}
 
 		{{template "sections" .VSections}}
@@ -22,15 +22,6 @@
 
 		<button type="submit">Submit</button>
 	</form>
-
-	<script>
-		const form = document.querySelector("#form");
-		form.addEventListener("submit", (e) => {
-			e.preventDefault();
-			const formData = new FormData(form);
-			console.log(Object.fromEntries(formData.entries()));
-		});
-	</script>
 </body>
 
 </html>

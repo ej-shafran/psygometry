@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"io"
 	"net/http"
@@ -31,6 +32,21 @@ func main() {
 
 	e.GET("/", func(c echo.Context) error {
 		return c.Render(http.StatusOK, "index", generateFakeData())
+	})
+	e.POST("/answers", func(c echo.Context) error {
+		req := c.Request()
+		err := req.ParseForm()
+		if err != nil {
+			return err
+		}
+
+		fmt.Print("----------\n")
+		for x := range req.Form {
+			fmt.Printf("'%s' = '%s'\n", x, req.Form.Get(x))
+		}
+		fmt.Print("----------\n")
+
+		return c.NoContent(http.StatusCreated)
 	})
 	e.Logger.Fatal(e.Start(":1714"))
 }
