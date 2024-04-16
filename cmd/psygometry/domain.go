@@ -1,6 +1,7 @@
 package main
 
 type Question struct {
+	Content       string
 	Options       [4]string
 	CorrectOption int
 }
