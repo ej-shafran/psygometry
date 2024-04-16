@@ -1,5 +1,12 @@
 package main
 
+import (
+	"errors"
+	"net/url"
+	"regexp"
+	"strconv"
+)
+
 type Question struct {
 	Content       string
 	Options       [4]string
@@ -23,6 +30,121 @@ type PsychometryAnswers struct {
 	VSections    [2][]int
 	QSections    [2][]int
 	ESections    [2][]int
+}
+
+func newPsychometryAnswers(test PsychometryTest) PsychometryAnswers {
+	answers := PsychometryAnswers{
+		EssaySection: "",
+		VSections: [2][]int{
+			make([]int, len(test.VSections[0].Questions)),
+			make([]int, len(test.VSections[1].Questions)),
+		},
+		QSections: [2][]int{
+			make([]int, len(test.QSections[0].Questions)),
+			make([]int, len(test.QSections[1].Questions)),
+		},
+		ESections: [2][]int{
+			make([]int, len(test.ESections[0].Questions)),
+			make([]int, len(test.ESections[1].Questions)),
+		},
+	}
+
+	for _, s := range answers.VSections {
+		for j := range s {
+			s[j] = -1
+		}
+	}
+	for _, s := range answers.QSections {
+		for j := range s {
+			s[j] = -1
+		}
+	}
+	for _, s := range answers.ESections {
+		for j := range s {
+			s[j] = -1
+		}
+	}
+
+	return answers
+}
+
+func ParsePsychometryAnswers(form url.Values, test PsychometryTest) (*PsychometryAnswers, error) {
+	answers := newPsychometryAnswers(test)
+
+	r := regexp.MustCompile("[\\][.]+")
+
+	for key := range form {
+		path := r.Split(key, -1)
+
+		if len(path) < 1 {
+			return nil, errors.New("deformed key")
+		}
+
+		if path[0] == "EssaySection" {
+			answers.EssaySection = form.Get(key)
+			continue
+		}
+
+		if path[0] != "VSections" && path[0] != "QSections" && path[0] != "ESections" {
+			return nil, errors.New("invalid key")
+		}
+
+		if len(path) < 2 {
+			return nil, errors.New("missing section index")
+		}
+		sIndex, err := strconv.Atoi(path[1])
+		if err != nil {
+			return nil, errors.New("deformed section index")
+		}
+		if sIndex != 0 && sIndex != 1 {
+			return nil, errors.New("invalid section index")
+		}
+
+		if len(path) < 3 {
+			return nil, errors.New("missing question index")
+		}
+		qIndex, err := strconv.Atoi(path[2])
+		if err != nil {
+			return nil, errors.New("deformed question index")
+		}
+
+		rawValue := form.Get(key)
+		var value int
+		if rawValue == "" {
+			value = -1
+		} else {
+			value, err = strconv.Atoi(rawValue)
+			if err != nil {
+				return nil, errors.New("deformed option index")
+			}
+		}
+		if value < 0 || value > 4 {
+			return nil, errors.New("invalid option index")
+		}
+
+		var arr [2][]int
+		switch path[0] {
+		case "VSections":
+			arr = answers.VSections
+			break
+		case "QSections":
+			arr = answers.QSections
+			break
+		case "ESections":
+			arr = answers.ESections
+			break
+		default:
+			panic("Invariant")
+		}
+
+		if qIndex < 0 || qIndex >= len(arr[sIndex]) {
+			return nil, errors.New("invalid question index")
+		}
+
+		arr[sIndex][qIndex] = value
+	}
+
+	return &answers, nil
 }
 
 func generateFakeData() PsychometryTest {

@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io"
 	"net/http"
+	"os"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -30,8 +32,10 @@ func main() {
 
 	e.Renderer = t
 
+	fakeData := generateFakeData()
+
 	e.GET("/", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "index", generateFakeData())
+		return c.Render(http.StatusOK, "index", fakeData)
 	})
 	e.POST("/answers", func(c echo.Context) error {
 		req := c.Request()
@@ -41,9 +45,11 @@ func main() {
 		}
 
 		fmt.Print("----------\n")
-		for x := range req.Form {
-			fmt.Printf("'%s' = '%s'\n", x, req.Form.Get(x))
+		answers, err := ParsePsychometryAnswers(req.Form, fakeData)
+		if err != nil {
+			return err
 		}
+		json.NewEncoder(os.Stdout).Encode(answers)
 		fmt.Print("----------\n")
 
 		return c.NoContent(http.StatusCreated)

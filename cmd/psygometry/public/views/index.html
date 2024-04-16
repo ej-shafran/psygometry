@@ -51,9 +51,9 @@
 		<legend>{{$q.Content}}</legend>
 
 		{{range $k, $o := $q.Options}}
-		<input id="{{$s.Kind}}Sections[{{$i}}].Questions[{{$j}}].Options[{{$k}}]"
-			name="{{$s.Kind}}Sections[{{$i}}].Questions[{{$k}}]" type="radio" value="{{$k}}">
-		<label for="{{$s.Kind}}Sections[{{$i}}].Questions[{{$j}}].Options[{{$k}}]">{{$o}}</label>
+		<input id="{{$s.Kind}}Sections[{{$i}}][{{$j}}].Options[{{$k}}]"
+			name="{{$s.Kind}}Sections[{{$i}}][{{$j}}]" type="radio" value="{{$k}}">
+		<label for="{{$s.Kind}}Sections[{{$i}}][{{$j}}].Options[{{$k}}]">{{$o}}</label>
 		{{end}}
 	</fieldset>
 
