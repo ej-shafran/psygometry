@@ -5,7 +5,7 @@
 - [x] Create fake data
 - [x] Render test data in the client, without sending correct answers
 - [x] Create data structure for test answers
-- [ ] Send test answers to server
+- [x] Send test answers to server
 - [ ] Parse answers from request
 - [ ] Calculate static scores
 - [ ] Create basic AI package that grades essays
