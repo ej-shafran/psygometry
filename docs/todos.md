@@ -6,7 +6,7 @@
 - [x] Render test data in the client, without sending correct answers
 - [x] Create data structure for test answers
 - [x] Send test answers to server
-- [ ] Parse answers from request
+- [x] Parse answers from request
     - [ ] Test
 - [ ] Calculate static scores
     - [ ] Test
