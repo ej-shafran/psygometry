@@ -1,0 +1,31 @@
+{{define "index"}}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Psygometry</title>
+
+	<script src="https://unpkg.com/htmx.org@1.9.11"></script>
+</head>
+
+<body>
+	{{template "button" .}}
+</body>
+
+</html>
+
+{{end}}
+
+{{define "button"}}
+<button hx-post="/clicked" hx-target="#count">
+	Click Me: <span id="count">{{template "count" .}}</span>
+</button>
+{{end}}
+
+{{define "count"}}
+{{.Count}}
+{{end}}

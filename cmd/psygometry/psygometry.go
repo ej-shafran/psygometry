@@ -9,6 +9,16 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+type State struct {
+	Count int
+}
+
+func NewState() State {
+	return State{
+		Count: 1,
+	}
+}
+
 type Template struct {
 	templates *template.Template
 }
@@ -29,8 +39,14 @@ func main() {
 
 	e.Renderer = t
 
+	state := NewState()
+
 	e.GET("/", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "hello", "world")
+		return c.Render(http.StatusOK, "index", state)
+	})
+	e.POST("/clicked", func(c echo.Context) error {
+		state.Count += 1
+		return c.Render(http.StatusCreated, "count", state)
 	})
 	e.Logger.Fatal(e.Start(":1714"))
 }
