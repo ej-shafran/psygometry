@@ -7,6 +7,7 @@ type Question struct {
 }
 
 type Section struct {
+	Kind      string
 	Questions []Question
 }
 
@@ -22,6 +23,7 @@ func generateFakeData() PsychometryTest {
 		EssaySection: "Please write an essay on the importance of storytelling in modern cinema.",
 		VSections: [2]Section{
 			{
+				Kind: "V",
 				Questions: []Question{
 					{
 						Content:       "Who played the lead role in the movie 'Inception'?",
@@ -36,6 +38,7 @@ func generateFakeData() PsychometryTest {
 				},
 			},
 			{
+				Kind: "V",
 				Questions: []Question{
 					{
 						Content:       "Who is the author of the 'Game of Thrones' book series?",
@@ -52,6 +55,7 @@ func generateFakeData() PsychometryTest {
 		},
 		QSections: [2]Section{
 			{
+				Kind: "Q",
 				Questions: []Question{
 					{
 						Content:       "Which Avenger is known for his green appearance and incredible strength?",
@@ -66,6 +70,7 @@ func generateFakeData() PsychometryTest {
 				},
 			},
 			{
+				Kind: "Q",
 				Questions: []Question{
 					{
 						Content:       "Which band is known for the song 'Bohemian Rhapsody'?",
@@ -82,6 +87,7 @@ func generateFakeData() PsychometryTest {
 		},
 		ESections: [2]Section{
 			{
+				Kind: "E",
 				Questions: []Question{
 					{
 						Content:       "Who painted the famous artwork 'Starry Night'?",
@@ -96,6 +102,7 @@ func generateFakeData() PsychometryTest {
 				},
 			},
 			{
+				Kind: "E",
 				Questions: []Question{
 					{
 						Content:       "Who won the Academy Award for Best Actress for her role in 'Black Swan'?",
