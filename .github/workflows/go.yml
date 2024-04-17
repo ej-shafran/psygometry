@@ -45,4 +45,4 @@ jobs:
       - name: "Test"
         working-directory: "${{ matrix.dir }}"
         run: |
-          go test -v .
+          go test -v . -quickchecks 10000
