@@ -68,6 +68,13 @@ func newPsychometryAnswers(test PsychometryTest) PsychometryAnswers {
 	return answers
 }
 
+var (
+	InvalidKey    = errors.New("invalid key")
+	MissingIndex  = errors.New("missing index")
+	DeformedIndex = errors.New("deformed index")
+	InvalidIndex  = errors.New("invalid index")
+)
+
 func ParsePsychometryAnswers(form url.Values, test PsychometryTest) (*PsychometryAnswers, error) {
 	answers := newPsychometryAnswers(test)
 
@@ -76,36 +83,32 @@ func ParsePsychometryAnswers(form url.Values, test PsychometryTest) (*Psychometr
 	for key := range form {
 		path := r.Split(key, -1)
 
-		if len(path) < 1 {
-			return nil, errors.New("deformed key")
-		}
-
 		if path[0] == "EssaySection" {
 			answers.EssaySection = form.Get(key)
 			continue
 		}
 
 		if path[0] != "VSections" && path[0] != "QSections" && path[0] != "ESections" {
-			return nil, errors.New("invalid key")
+			return nil, InvalidKey
 		}
 
 		if len(path) < 2 {
-			return nil, errors.New("missing section index")
+			return nil, MissingIndex
 		}
 		sIndex, err := strconv.Atoi(path[1])
 		if err != nil {
-			return nil, errors.New("deformed section index")
+			return nil, DeformedIndex
 		}
 		if sIndex != 0 && sIndex != 1 {
-			return nil, errors.New("invalid section index")
+			return nil, InvalidIndex
 		}
 
 		if len(path) < 3 {
-			return nil, errors.New("missing question index")
+			return nil, MissingIndex
 		}
 		qIndex, err := strconv.Atoi(path[2])
 		if err != nil {
-			return nil, errors.New("deformed question index")
+			return nil, DeformedIndex
 		}
 
 		rawValue := form.Get(key)
@@ -115,11 +118,11 @@ func ParsePsychometryAnswers(form url.Values, test PsychometryTest) (*Psychometr
 		} else {
 			value, err = strconv.Atoi(rawValue)
 			if err != nil {
-				return nil, errors.New("deformed option index")
+				return nil, DeformedIndex
 			}
 		}
 		if value < 0 || value > 4 {
-			return nil, errors.New("invalid option index")
+			return nil, InvalidIndex
 		}
 
 		var arr [2][]int
@@ -138,7 +141,7 @@ func ParsePsychometryAnswers(form url.Values, test PsychometryTest) (*Psychometr
 		}
 
 		if qIndex < 0 || qIndex >= len(arr[sIndex]) {
-			return nil, errors.New("invalid question index")
+			return nil, InvalidIndex
 		}
 
 		arr[sIndex][qIndex] = value
