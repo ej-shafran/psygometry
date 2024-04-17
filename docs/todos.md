@@ -7,7 +7,7 @@
 - [x] Create data structure for test answers
 - [x] Send test answers to server
 - [x] Parse answers from request
-    - [ ] Test
+    - [x] Test
 - [ ] Calculate static scores
     - [ ] Test
 - [ ] Create basic AI package that grades essays
