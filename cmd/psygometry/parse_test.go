@@ -18,8 +18,8 @@ func makeSectionArray(size int) [2]Section {
 	return [2]Section{makeSection(size), makeSection(size)}
 }
 
-func (PsychometryTest) Generate(rand *rand.Rand, size int) reflect.Value {
-	pt := PsychometryTest{
+func (PsychometryQuiz) Generate(rand *rand.Rand, size int) reflect.Value {
+	pt := PsychometryQuiz{
 		EssaySection: "",
 		VSections:    makeSectionArray(size),
 		QSections:    makeSectionArray(size),
@@ -30,11 +30,11 @@ func (PsychometryTest) Generate(rand *rand.Rand, size int) reflect.Value {
 
 // Test: parsing an answer form with only an essay is done successfully
 func TestParsePsychometryAnswers_success(t *testing.T) {
-	success := func(test PsychometryTest, essay string) bool {
+	success := func(quiz PsychometryQuiz, essay string) bool {
 		form := url.Values{}
 		form.Add("EssaySection", essay)
 
-		a, err := ParsePsychometryAnswers(form, test)
+		a, err := ParsePsychometryAnswers(form, quiz)
 		return err == nil && a.EssaySection == essay
 	}
 
@@ -69,8 +69,8 @@ func (invalidKeyValues) Generate(rand *rand.Rand, size int) reflect.Value {
 }
 
 func TestParsePsychometryAnswers_invalidKey(t *testing.T) {
-	invalidKey := func(test PsychometryTest, form invalidKeyValues) bool {
-		_, err := ParsePsychometryAnswers(url.Values(form), test)
+	invalidKey := func(quiz PsychometryQuiz, form invalidKeyValues) bool {
+		_, err := ParsePsychometryAnswers(url.Values(form), quiz)
 		return err == InvalidKey
 	}
 
@@ -94,8 +94,8 @@ func (missingIndexValues) Generate(rand *rand.Rand, size int) reflect.Value {
 }
 
 func TestParsePsychometryAnswers_missingIndex(t *testing.T) {
-	missingIndex := func(test PsychometryTest, form missingIndexValues) bool {
-		_, err := ParsePsychometryAnswers(url.Values(form), test)
+	missingIndex := func(quiz PsychometryQuiz, form missingIndexValues) bool {
+		_, err := ParsePsychometryAnswers(url.Values(form), quiz)
 		return err == MissingIndex
 	}
 
@@ -119,8 +119,8 @@ func (deformedIndexValues) Generate(rand *rand.Rand, size int) reflect.Value {
 }
 
 func TestParsePsychometryAnswers_deformedIndex(t *testing.T) {
-	deformedIndex := func(test PsychometryTest, form deformedIndexValues) bool {
-		_, err := ParsePsychometryAnswers(url.Values(form), test)
+	deformedIndex := func(quiz PsychometryQuiz, form deformedIndexValues) bool {
+		_, err := ParsePsychometryAnswers(url.Values(form), quiz)
 		return err == DeformedIndex
 	}
 
@@ -149,8 +149,8 @@ func (invalidIndexValues) Generate(rand *rand.Rand, size int) reflect.Value {
 }
 
 func TestParsePsychometryAnswers_invalidIndex(t *testing.T) {
-	invalidIndex := func(test PsychometryTest, form invalidIndexValues) bool {
-		_, err := ParsePsychometryAnswers(url.Values(form), test)
+	invalidIndex := func(quiz PsychometryQuiz, form invalidIndexValues) bool {
+		_, err := ParsePsychometryAnswers(url.Values(form), quiz)
 		return err == InvalidIndex
 	}
 

@@ -18,7 +18,7 @@ type Section struct {
 	Questions []Question
 }
 
-type PsychometryTest struct {
+type PsychometryQuiz struct {
 	EssaySection string
 	VSections    [2]Section
 	QSections    [2]Section
@@ -32,20 +32,20 @@ type PsychometryAnswers struct {
 	ESections    [2][]int
 }
 
-func newPsychometryAnswers(test PsychometryTest) PsychometryAnswers {
+func newPsychometryAnswers(quiz PsychometryQuiz) PsychometryAnswers {
 	answers := PsychometryAnswers{
 		EssaySection: "",
 		VSections: [2][]int{
-			make([]int, len(test.VSections[0].Questions)),
-			make([]int, len(test.VSections[1].Questions)),
+			make([]int, len(quiz.VSections[0].Questions)),
+			make([]int, len(quiz.VSections[1].Questions)),
 		},
 		QSections: [2][]int{
-			make([]int, len(test.QSections[0].Questions)),
-			make([]int, len(test.QSections[1].Questions)),
+			make([]int, len(quiz.QSections[0].Questions)),
+			make([]int, len(quiz.QSections[1].Questions)),
 		},
 		ESections: [2][]int{
-			make([]int, len(test.ESections[0].Questions)),
-			make([]int, len(test.ESections[1].Questions)),
+			make([]int, len(quiz.ESections[0].Questions)),
+			make([]int, len(quiz.ESections[1].Questions)),
 		},
 	}
 
@@ -75,8 +75,8 @@ var (
 	InvalidIndex  = errors.New("invalid index")
 )
 
-func ParsePsychometryAnswers(form url.Values, test PsychometryTest) (*PsychometryAnswers, error) {
-	answers := newPsychometryAnswers(test)
+func ParsePsychometryAnswers(form url.Values, quiz PsychometryQuiz) (*PsychometryAnswers, error) {
+	answers := newPsychometryAnswers(quiz)
 
 	r := regexp.MustCompile("[\\][.]+")
 
@@ -150,8 +150,8 @@ func ParsePsychometryAnswers(form url.Values, test PsychometryTest) (*Psychometr
 	return &answers, nil
 }
 
-func generateFakeData() PsychometryTest {
-	test := PsychometryTest{
+func generateFakeData() PsychometryQuiz {
+	quiz := PsychometryQuiz{
 		EssaySection: "Please write an essay on the importance of storytelling in modern cinema.",
 		VSections: [2]Section{
 			{
@@ -250,5 +250,5 @@ func generateFakeData() PsychometryTest {
 			},
 		},
 	}
-	return test
+	return quiz
 }
