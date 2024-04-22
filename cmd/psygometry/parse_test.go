@@ -19,13 +19,13 @@ func makeSectionArray(size int) [2]Section {
 }
 
 func (PsychometryQuiz) Generate(rand *rand.Rand, size int) reflect.Value {
-	pt := PsychometryQuiz{
+	quiz := PsychometryQuiz{
 		EssaySection: "",
 		VSections:    makeSectionArray(size),
 		QSections:    makeSectionArray(size),
 		ESections:    makeSectionArray(size),
 	}
-	return reflect.ValueOf(pt)
+	return reflect.ValueOf(quiz)
 }
 
 // Test: parsing an answer form with only an essay is done successfully

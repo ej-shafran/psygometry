@@ -7,9 +7,9 @@
 - [x] Create data structure for quiz answers
 - [x] Send quiz answers to server
 - [x] Parse answers from request
-    - [x] Test
-- [ ] Calculate static scores
-    - [ ] Test
+  - [x] Test
+- [x] Calculate static scores
+  - [x] Test
 - [ ] Create basic AI package that grades essays
 - [ ] Respond with grade, or possibly grade-range
 - [ ] Properly paginate between sections
