@@ -1,6 +1,6 @@
 package main
 
-func RawCategoryScore(quizSections [2]Section, answerSections [2][]int) int {
+func rawCategoryScore(quizSections [2]Section, answerSections [2][]int) int {
 	score := 0
 
 	for i, section := range quizSections {
@@ -15,7 +15,7 @@ func RawCategoryScore(quizSections [2]Section, answerSections [2][]int) int {
 	return score
 }
 
-func UniformCategoryScore(quizSections [2]Section, rawScore int) int {
+func uniformCategoryScore(quizSections [2]Section, rawScore int) int {
 	totalQuestions := len(quizSections[0].Questions) + len(quizSections[1].Questions)
 	percent := rawScore * 100 / totalQuestions
 	return percent + 50
@@ -44,7 +44,7 @@ var measurementRanges = map[int][2]int{
 	145: {762, 795},
 }
 
-func GeneralMeasurementRange(score int) [2]int {
+func generalMeasurementRange(score int) [2]int {
 	if score <= 50 {
 		return [2]int{200, 200}
 	}
@@ -77,21 +77,21 @@ type ScoreSummary struct {
 func CalculateScoreSummary(quiz PsychometryQuiz, answers PsychometryAnswers) ScoreSummary {
 	summary := ScoreSummary{}
 
-	summary.VRaw = RawCategoryScore(quiz.VSections, answers.VSections)
-	summary.QRaw = RawCategoryScore(quiz.QSections, answers.QSections)
-	summary.ERaw = RawCategoryScore(quiz.ESections, answers.ESections)
+	summary.VRaw = rawCategoryScore(quiz.VSections, answers.VSections)
+	summary.QRaw = rawCategoryScore(quiz.QSections, answers.QSections)
+	summary.ERaw = rawCategoryScore(quiz.ESections, answers.ESections)
 
-	summary.VUniform = UniformCategoryScore(quiz.VSections, summary.VRaw)
-	summary.QUniform = UniformCategoryScore(quiz.QSections, summary.QRaw)
-	summary.EUniform = UniformCategoryScore(quiz.ESections, summary.ERaw)
+	summary.VUniform = uniformCategoryScore(quiz.VSections, summary.VRaw)
+	summary.QUniform = uniformCategoryScore(quiz.QSections, summary.QRaw)
+	summary.EUniform = uniformCategoryScore(quiz.ESections, summary.ERaw)
 
 	summary.MultiCategoryUniform = (2*summary.VUniform + 2*summary.QUniform + summary.EUniform) / 5
 	summary.LanguageFocusUniform = (3*summary.VUniform + summary.QUniform + summary.EUniform) / 5
 	summary.MathFocusUniform = (3*summary.QUniform + summary.VUniform + summary.EUniform) / 5
 
-	summary.MultiCategoryGeneral = GeneralMeasurementRange(summary.MultiCategoryUniform)
-	summary.LanguageFocusGeneral = GeneralMeasurementRange(summary.LanguageFocusUniform)
-	summary.MathFocusGeneral = GeneralMeasurementRange(summary.MathFocusUniform)
+	summary.MultiCategoryGeneral = generalMeasurementRange(summary.MultiCategoryUniform)
+	summary.LanguageFocusGeneral = generalMeasurementRange(summary.LanguageFocusUniform)
+	summary.MathFocusGeneral = generalMeasurementRange(summary.MathFocusUniform)
 
 	return summary
 }
