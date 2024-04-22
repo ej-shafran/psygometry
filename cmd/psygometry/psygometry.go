@@ -44,12 +44,14 @@ func main() {
 			return err
 		}
 
-		fmt.Print("----------\n")
 		answers, err := ParsePsychometryAnswers(req.Form, fakeData)
 		if err != nil {
 			return err
 		}
-		json.NewEncoder(os.Stdout).Encode(answers)
+		summary := CalculateScoreSummary(fakeData, *answers)
+
+		fmt.Print("----------\n")
+		json.NewEncoder(os.Stdout).Encode(summary)
 		fmt.Print("----------\n")
 
 		return c.NoContent(http.StatusCreated)
