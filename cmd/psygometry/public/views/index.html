@@ -14,7 +14,7 @@
 
 <body>
 	<form hx-post="/answers" hx-swap="none" hx-on::after-request="this.reset()">
-		{{template "essay" .EssaySection}}
+		{{template "writing" .WritingSection}}
 
 		{{template "sections" .VSections}}
 		{{template "sections" .QSections}}
@@ -28,12 +28,12 @@
 
 {{end}}
 
-{{define "essay"}}
+{{define "writing"}}
 
 <fieldset>
 	<p>{{.}}</p>
 
-	<textarea name="EssaySection"></textarea>
+	<textarea name="WritingSection"></textarea>
 </fieldset>
 
 {{end}}

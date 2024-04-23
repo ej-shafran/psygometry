@@ -53,20 +53,20 @@ func main() {
 		if err != nil {
 			return err
 		}
-		summary := CalculateScoreSummary(fakeData, *answers)
+		summary := calculateStaticScores(fakeData, *answers)
 
 		log.Println("score summary = ")
 		summaryJson, err := json.Marshal(summary)
 		log.Println(string(summaryJson))
 
-		essayScore, err := CalculateEssayScore(fakeData.EssaySection, answers.EssaySection)
+		writingScore, err := calculateWritingScore(fakeData.WritingSection, answers.WritingSection)
 		if err != nil {
 			return err
 		}
 
-		log.Println("essay score = ")
-		essayScoreJson, err := json.Marshal(essayScore)
-		log.Println(string(essayScoreJson))
+		log.Println("writing score = ")
+		writingScoreJson, err := json.Marshal(writingScore)
+		log.Println(string(writingScoreJson))
 
 		return c.NoContent(http.StatusCreated)
 	})
