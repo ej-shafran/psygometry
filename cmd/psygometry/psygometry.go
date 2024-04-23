@@ -53,20 +53,14 @@ func main() {
 		if err != nil {
 			return err
 		}
-		summary := calculateStaticScores(fakeData, *answers)
 
-		log.Println("score summary = ")
-		summaryJson, err := json.Marshal(summary)
-		log.Println(string(summaryJson))
-
-		writingScore, err := calculateWritingScore(fakeData.WritingSection, answers.WritingSection)
+		summary, err := CalculateScoreSummary(fakeData, *answers)
 		if err != nil {
 			return err
 		}
-
-		log.Println("writing score = ")
-		writingScoreJson, err := json.Marshal(writingScore)
-		log.Println(string(writingScoreJson))
+		log.Println("score summary = ")
+		summaryJson, err := json.Marshal(summary)
+		log.Println(string(summaryJson))
 
 		return c.NoContent(http.StatusCreated)
 	})

@@ -81,3 +81,41 @@ func generalMeasurementRange(score int) [2]int {
 
 	return measurementRanges[((score-1)/5)*5]
 }
+
+func CalculateScoreSummary(quiz PsychometryQuiz, answers PsychometryAnswers) (*ScoreSummary, error) {
+	static := calculateStaticScores(quiz, answers)
+
+	writing, err := calculateWritingScore(quiz.WritingSection, answers.WritingSection)
+	if err != nil {
+		return nil, err
+	}
+
+	dynamic := Scores{}
+
+	dynamic.VRaw = writing.Content + writing.Linguistic + static.VRaw
+	dynamic.QRaw = static.QRaw
+	dynamic.ERaw = static.ERaw
+
+	writingPercent := (writing.Content + writing.Linguistic) * 100 / 12
+	staticVPercent := static.VUniform - 50
+
+	dynamic.VUniform = ((writingPercent + (staticVPercent * 3)) / 4) + 50
+	dynamic.QUniform = static.QUniform
+	dynamic.EUniform = static.EUniform
+
+	dynamic.MultiCategoryUniform = multiCategoryUniform(dynamic.VUniform, dynamic.QUniform, dynamic.EUniform)
+	dynamic.VerbalFocusUniform = verbalFocusUniform(dynamic.VUniform, dynamic.QUniform, dynamic.EUniform)
+	dynamic.QuantitativeFocusUniform = quantitativeFocusUniform(dynamic.VUniform, dynamic.QUniform, dynamic.EUniform)
+
+	dynamic.MultiCategoryGeneral = generalMeasurementRange(dynamic.MultiCategoryUniform)
+	dynamic.VerbalFocusGeneral = generalMeasurementRange(dynamic.VerbalFocusUniform)
+	dynamic.QuantitativeFocusGeneral = generalMeasurementRange(dynamic.QuantitativeFocusUniform)
+
+	summary := &ScoreSummary{
+		WritingScore:  *writing,
+		StaticScores:  static,
+		DynamicScores: dynamic,
+	}
+
+	return summary, nil
+}
