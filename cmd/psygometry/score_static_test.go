@@ -12,26 +12,49 @@ type scoreSummaryInput struct {
 	answers PsychometryAnswers
 }
 
+func makeQuizSection(size int, rand *rand.Rand) Section {
+	questions := make([]Question, size)
+	for i := range questions {
+		questions[i] = Question{CorrectOption: rand.Intn(3)}
+	}
+
+	return Section{Kind: "", Questions: questions}
+}
+
+func makeQuizSectionArray(size int, rand *rand.Rand) [2]Section {
+	return [2]Section{makeQuizSection(size, rand), makeQuizSection(size, rand)}
+}
+
 func makeAnswerSection(size int) []int {
 	return make([]int, size)
 }
 
-func makeAnswerSectionArray(size int) [2][]int {
-	return [2][]int{makeAnswerSection(size), makeAnswerSection(size)}
+func makeAnswerSectionArray(size int, rand *rand.Rand) [2][]int {
+	a := makeAnswerSection(size)
+	for i := range a {
+		a[i] = rand.Intn(3)
+	}
+
+	b := makeAnswerSection(size)
+	for i := range b {
+		b[i] = rand.Intn(3)
+	}
+
+	return [2][]int{a, b}
 }
 
 func (scoreSummaryInput) Generate(rand *rand.Rand, size int) reflect.Value {
 	quiz := PsychometryQuiz{
 		WritingSection: "",
-		VSections:    makeSectionArray(size),
-		QSections:    makeSectionArray(size),
-		ESections:    makeSectionArray(size),
+		VSections:      makeQuizSectionArray(size, rand),
+		QSections:      makeQuizSectionArray(size, rand),
+		ESections:      makeQuizSectionArray(size, rand),
 	}
 	answers := PsychometryAnswers{
 		WritingSection: "",
-		VSections:    makeAnswerSectionArray(size),
-		QSections:    makeAnswerSectionArray(size),
-		ESections:    makeAnswerSectionArray(size),
+		VSections:      makeAnswerSectionArray(size, rand),
+		QSections:      makeAnswerSectionArray(size, rand),
+		ESections:      makeAnswerSectionArray(size, rand),
 	}
 
 	return reflect.ValueOf(scoreSummaryInput{quiz, answers})
