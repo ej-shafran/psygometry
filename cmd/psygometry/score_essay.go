@@ -16,32 +16,26 @@ import (
 	"google.golang.org/api/option"
 )
 
-type EssayScore struct {
-	Linguistic  int    `json:"linguistic"`
-	Content     int    `json:"content"`
-	Explanation string `json:"explanation"`
-}
-
 const charactersPerLine = 40
 const minimumLines = 25
 const maximumLines = 50
 
-func essayOutOfBounds(essay string) *EssayScore {
-	count := strings.Count(essay, "")
+func writingOutOfBounds(writing string) *WritingScore {
+	count := strings.Count(writing, "")
 
 	if count < minimumLines*charactersPerLine {
-		return &EssayScore{
+		return &WritingScore{
 			Linguistic:  0,
 			Content:     0,
-			Explanation: fmt.Sprintf("The essay was below the minimum line count of %d.", minimumLines),
+			Explanation: fmt.Sprintf("The writing was below the minimum line count of %d.", minimumLines),
 		}
 	}
 
 	if count > maximumLines*charactersPerLine {
-		return &EssayScore{
+		return &WritingScore{
 			Linguistic:  0,
 			Content:     0,
-			Explanation: fmt.Sprintf("The essay was above the maximum line count of %d.", maximumLines),
+			Explanation: fmt.Sprintf("The writing was above the maximum line count of %d.", maximumLines),
 		}
 	}
 
@@ -58,12 +52,12 @@ var scoreSchema = &genai.Schema{
 	Required: []string{"linguistic", "content", "explanation"},
 }
 
-var calculateEssayScoreFunc = genai.FunctionDeclaration{
-	Name:       "CalculateEssayScore",
+var calculateWritingScoreFunc = genai.FunctionDeclaration{
+	Name:       "CalculateWritingScore",
 	Parameters: scoreSchema,
 }
 
-const essayScorePrompt = `
+const writingScorePrompt = `
 Please return JSON grading this essay, based on its prompt and the following rules.
 
 The prompt (between the "-----" delimiters):
@@ -110,14 +104,14 @@ func parseGeminiInt(v any) (int, bool) {
 	return 0, false
 }
 
-func CalculateEssayScore(prompt string, essay string) (*EssayScore, error) {
-	outOfBounds := essayOutOfBounds(essay)
+func calculateWritingScore(prompt string, writing string) (*WritingScore, error) {
+	outOfBounds := writingOutOfBounds(writing)
 	if outOfBounds != nil {
 		return outOfBounds, nil
 	}
 
-	if malformedRegexp.MatchString(essay) {
-		return nil, errors.New("malformed essay content")
+	if malformedRegexp.MatchString(writing) {
+		return nil, errors.New("malformed content")
 	}
 
 	apiKey := os.Getenv("GEMINI_API_KEY")
@@ -134,13 +128,13 @@ func CalculateEssayScore(prompt string, essay string) (*EssayScore, error) {
 
 	model := client.GenerativeModel("gemini-pro")
 	model.Tools = []*genai.Tool{
-		{FunctionDeclarations: []*genai.FunctionDeclaration{&calculateEssayScoreFunc}},
+		{FunctionDeclarations: []*genai.FunctionDeclaration{&calculateWritingScoreFunc}},
 	}
 	model.ToolConfig = &genai.ToolConfig{
 		FunctionCallingConfig: &genai.FunctionCallingConfig{Mode: genai.FunctionCallingAny},
 	}
 
-	response, err := model.GenerateContent(ctx, genai.Text(fmt.Sprintf(essayScorePrompt, prompt, essay)))
+	response, err := model.GenerateContent(ctx, genai.Text(fmt.Sprintf(writingScorePrompt, prompt, writing)))
 	if err != nil {
 		return nil, err
 	}
@@ -165,11 +159,11 @@ func CalculateEssayScore(prompt string, essay string) (*EssayScore, error) {
 	if !ok {
 		return nil, errors.New("invalid gemini response")
 	}
-	essayScore := &EssayScore{
+	writingScore := &WritingScore{
 		Linguistic:  linguistic,
 		Content:     content,
 		Explanation: explanation,
 	}
 
-	return essayScore, nil
+	return writingScore, nil
 }

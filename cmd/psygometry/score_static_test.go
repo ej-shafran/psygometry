@@ -22,13 +22,13 @@ func makeAnswerSectionArray(size int) [2][]int {
 
 func (scoreSummaryInput) Generate(rand *rand.Rand, size int) reflect.Value {
 	quiz := PsychometryQuiz{
-		EssaySection: "",
+		WritingSection: "",
 		VSections:    makeSectionArray(size),
 		QSections:    makeSectionArray(size),
 		ESections:    makeSectionArray(size),
 	}
 	answers := PsychometryAnswers{
-		EssaySection: "",
+		WritingSection: "",
 		VSections:    makeAnswerSectionArray(size),
 		QSections:    makeAnswerSectionArray(size),
 		ESections:    makeAnswerSectionArray(size),
@@ -56,7 +56,7 @@ func generalInvalid(generalScore [2]int) bool {
 // Test: calculating a score summary always returns a valid score summary within the proper ranges
 func TestCalculateScoreSummary_valid(t *testing.T) {
 	valid := func(input scoreSummaryInput) bool {
-		scoreSummary := CalculateScoreSummary(input.quiz, input.answers)
+		scoreSummary := calculateStaticScores(input.quiz, input.answers)
 
 		// Ensure the raw scores are never greater than their section sizes or less than 0
 		vRawOutOfBounds := rawOutOfBounds(scoreSummary.VRaw, input.quiz.VSections)
@@ -77,8 +77,8 @@ func TestCalculateScoreSummary_valid(t *testing.T) {
 		// Ensure the general score range is between 200 and 800,
 		// and that the minimum score is less than or equal to the maximum score
 		multiCategoryInvalid := generalInvalid(scoreSummary.MultiCategoryGeneral)
-		mathFocusInvalid := generalInvalid(scoreSummary.MathFocusGeneral)
-		languageFocusInvalid := generalInvalid(scoreSummary.LanguageFocusGeneral)
+		mathFocusInvalid := generalInvalid(scoreSummary.QuantitativeFocusGeneral)
+		languageFocusInvalid := generalInvalid(scoreSummary.VerbalFocusGeneral)
 		if multiCategoryInvalid || mathFocusInvalid || languageFocusInvalid {
 			return false
 		}

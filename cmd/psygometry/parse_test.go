@@ -20,7 +20,7 @@ func makeSectionArray(size int) [2]Section {
 
 func (PsychometryQuiz) Generate(rand *rand.Rand, size int) reflect.Value {
 	quiz := PsychometryQuiz{
-		EssaySection: "",
+		WritingSection: "",
 		VSections:    makeSectionArray(size),
 		QSections:    makeSectionArray(size),
 		ESections:    makeSectionArray(size),
@@ -30,12 +30,12 @@ func (PsychometryQuiz) Generate(rand *rand.Rand, size int) reflect.Value {
 
 // Test: parsing an answer form with only an essay is done successfully
 func TestParsePsychometryAnswers_success(t *testing.T) {
-	success := func(quiz PsychometryQuiz, essay string) bool {
+	success := func(quiz PsychometryQuiz, writing string) bool {
 		form := url.Values{}
-		form.Add("EssaySection", essay)
+		form.Add("WritingSection", writing)
 
 		a, err := ParsePsychometryAnswers(form, quiz)
-		return err == nil && a.EssaySection == essay
+		return err == nil && a.WritingSection == writing
 	}
 
 	if err := quick.Check(success, nil); err != nil {

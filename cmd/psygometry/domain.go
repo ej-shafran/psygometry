@@ -19,14 +19,14 @@ type Section struct {
 }
 
 type PsychometryQuiz struct {
-	EssaySection string
+	WritingSection string
 	VSections    [2]Section
 	QSections    [2]Section
 	ESections    [2]Section
 }
 
 type PsychometryAnswers struct {
-	EssaySection string
+	WritingSection string
 	VSections    [2][]int
 	QSections    [2][]int
 	ESections    [2][]int
@@ -34,7 +34,7 @@ type PsychometryAnswers struct {
 
 func newPsychometryAnswers(quiz PsychometryQuiz) PsychometryAnswers {
 	answers := PsychometryAnswers{
-		EssaySection: "",
+		WritingSection: "",
 		VSections: [2][]int{
 			make([]int, len(quiz.VSections[0].Questions)),
 			make([]int, len(quiz.VSections[1].Questions)),
@@ -83,8 +83,8 @@ func ParsePsychometryAnswers(form url.Values, quiz PsychometryQuiz) (*Psychometr
 	for key := range form {
 		path := r.Split(key, -1)
 
-		if path[0] == "EssaySection" {
-			answers.EssaySection = form.Get(key)
+		if path[0] == "WritingSection" {
+			answers.WritingSection = form.Get(key)
 			continue
 		}
 
@@ -152,7 +152,7 @@ func ParsePsychometryAnswers(form url.Values, quiz PsychometryQuiz) (*Psychometr
 
 func generateFakeData() PsychometryQuiz {
 	quiz := PsychometryQuiz{
-		EssaySection: "Please write an essay on the importance of storytelling in modern cinema.",
+		WritingSection: "Please write an essay on the importance of storytelling in modern cinema.",
 		VSections: [2]Section{
 			{
 				Kind: "V",

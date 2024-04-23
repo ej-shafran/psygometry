@@ -1,24 +1,45 @@
 package main
 
-func rawCategoryScore(quizSections [2]Section, answerSections [2][]int) int {
-	score := 0
-
-	for i, section := range quizSections {
-		for j, question := range section.Questions {
-			option := answerSections[i][j]
-			if option == question.CorrectOption {
-				score += 1
-			}
-		}
-	}
-
-	return score
+type WritingScore struct {
+	Linguistic  int
+	Content     int
+	Explanation string
 }
 
-func uniformCategoryScore(quizSections [2]Section, rawScore int) int {
-	totalQuestions := len(quizSections[0].Questions) + len(quizSections[1].Questions)
-	percent := rawScore * 100 / totalQuestions
-	return percent + 50
+type Scores struct {
+	VRaw int
+	QRaw int
+	ERaw int
+
+	VUniform int
+	QUniform int
+	EUniform int
+
+	MultiCategoryUniform     int
+	VerbalFocusUniform       int
+	QuantitativeFocusUniform int
+
+	MultiCategoryGeneral     [2]int
+	VerbalFocusGeneral       [2]int
+	QuantitativeFocusGeneral [2]int
+}
+
+type ScoreSummary struct {
+	StaticScores  Scores
+	WritingScore  WritingScore
+	DynamicScores Scores
+}
+
+func multiCategoryUniform(vUniform int, qUniform int, eUniform int) int {
+	return (2*vUniform + 2*qUniform + eUniform) / 5
+}
+
+func verbalFocusUniform(vUniform int, qUniform int, eUniform int) int {
+	return (3*vUniform + qUniform + eUniform) / 5
+}
+
+func quantitativeFocusUniform(vUniform int, qUniform int, eUniform int) int {
+	return (3*qUniform + vUniform + eUniform) / 5
 }
 
 var measurementRanges = map[int][2]int{
@@ -44,6 +65,11 @@ var measurementRanges = map[int][2]int{
 	145: {762, 795},
 }
 
+// Converts a score on the uniform scale to the generic PET score scale.
+//
+// "General PET scores: Each one of the general PET scores is based on a particular weight given to the raw score in each test domain. In the multi-domain score, the verbal reasoning and quantitative reasoning scores are each assigned double the weight of the score in English. In the quantitative-orientated score, the quantitative reasoning score is given triple the weight of each of the other two scores. In the verbal-orientated score the verbal reasoning score is given triple the weight of each of the other two scores." - [nite.org.il]
+//
+// [nite.org.il]: https://www.nite.org.il/psychometric-entrance-test/scores/calculation/?lang=en
 func generalMeasurementRange(score int) [2]int {
 	if score <= 50 {
 		return [2]int{200, 200}
@@ -56,42 +82,40 @@ func generalMeasurementRange(score int) [2]int {
 	return measurementRanges[((score-1)/5)*5]
 }
 
-type ScoreSummary struct {
-	VRaw int
-	QRaw int
-	ERaw int
+func CalculateScoreSummary(quiz PsychometryQuiz, answers PsychometryAnswers) (*ScoreSummary, error) {
+	static := calculateStaticScores(quiz, answers)
 
-	VUniform int
-	QUniform int
-	EUniform int
+	writing, err := calculateWritingScore(quiz.WritingSection, answers.WritingSection)
+	if err != nil {
+		return nil, err
+	}
 
-	MultiCategoryUniform int
-	LanguageFocusUniform int
-	MathFocusUniform     int
+	dynamic := Scores{}
 
-	MultiCategoryGeneral [2]int
-	LanguageFocusGeneral [2]int
-	MathFocusGeneral     [2]int
-}
+	dynamic.VRaw = writing.Content + writing.Linguistic + static.VRaw
+	dynamic.QRaw = static.QRaw
+	dynamic.ERaw = static.ERaw
 
-func CalculateScoreSummary(quiz PsychometryQuiz, answers PsychometryAnswers) ScoreSummary {
-	summary := ScoreSummary{}
+	writingPercent := (writing.Content + writing.Linguistic) * 100 / 12
+	staticVPercent := static.VUniform - 50
 
-	summary.VRaw = rawCategoryScore(quiz.VSections, answers.VSections)
-	summary.QRaw = rawCategoryScore(quiz.QSections, answers.QSections)
-	summary.ERaw = rawCategoryScore(quiz.ESections, answers.ESections)
+	dynamic.VUniform = ((writingPercent + (staticVPercent * 3)) / 4) + 50
+	dynamic.QUniform = static.QUniform
+	dynamic.EUniform = static.EUniform
 
-	summary.VUniform = uniformCategoryScore(quiz.VSections, summary.VRaw)
-	summary.QUniform = uniformCategoryScore(quiz.QSections, summary.QRaw)
-	summary.EUniform = uniformCategoryScore(quiz.ESections, summary.ERaw)
+	dynamic.MultiCategoryUniform = multiCategoryUniform(dynamic.VUniform, dynamic.QUniform, dynamic.EUniform)
+	dynamic.VerbalFocusUniform = verbalFocusUniform(dynamic.VUniform, dynamic.QUniform, dynamic.EUniform)
+	dynamic.QuantitativeFocusUniform = quantitativeFocusUniform(dynamic.VUniform, dynamic.QUniform, dynamic.EUniform)
 
-	summary.MultiCategoryUniform = (2*summary.VUniform + 2*summary.QUniform + summary.EUniform) / 5
-	summary.LanguageFocusUniform = (3*summary.VUniform + summary.QUniform + summary.EUniform) / 5
-	summary.MathFocusUniform = (3*summary.QUniform + summary.VUniform + summary.EUniform) / 5
+	dynamic.MultiCategoryGeneral = generalMeasurementRange(dynamic.MultiCategoryUniform)
+	dynamic.VerbalFocusGeneral = generalMeasurementRange(dynamic.VerbalFocusUniform)
+	dynamic.QuantitativeFocusGeneral = generalMeasurementRange(dynamic.QuantitativeFocusUniform)
 
-	summary.MultiCategoryGeneral = generalMeasurementRange(summary.MultiCategoryUniform)
-	summary.LanguageFocusGeneral = generalMeasurementRange(summary.LanguageFocusUniform)
-	summary.MathFocusGeneral = generalMeasurementRange(summary.MathFocusUniform)
+	summary := &ScoreSummary{
+		WritingScore:  *writing,
+		StaticScores:  static,
+		DynamicScores: dynamic,
+	}
 
-	return summary
+	return summary, nil
 }
