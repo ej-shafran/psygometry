@@ -62,7 +62,7 @@ func main() {
 		summaryJson, err := json.Marshal(summary)
 		log.Println(string(summaryJson))
 
-		return c.NoContent(http.StatusCreated)
+		return c.Render(http.StatusCreated, "scores", summary)
 	})
 	e.Logger.Fatal(e.Start(":1714"))
 }
