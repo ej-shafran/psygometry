@@ -11,7 +11,7 @@
 - [x] Calculate static scores
   - [x] Test
 - [x] Create basic AI package that grades essays
-- [ ] Calculate full score
+- [x] Calculate full score
 - [ ] Respond with grade, or possibly grade-range
 - [ ] Translate to Hebrew
 - [ ] Properly paginate between sections
