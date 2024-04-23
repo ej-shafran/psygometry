@@ -10,7 +10,7 @@
   - [x] Test
 - [x] Calculate static scores
   - [x] Test
-- [ ] Create basic AI package that grades essays
+- [x] Create basic AI package that grades essays
 - [ ] Respond with grade, or possibly grade-range
 - [ ] Properly paginate between sections
 - [ ] Add time limits
