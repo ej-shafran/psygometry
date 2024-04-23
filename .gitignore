@@ -20,5 +20,8 @@
 # Air temporary files
 tmp/
 
+# Environment variables
+.env
+
 # Dependency directories (remove the comment below to include it)
 # vendor/

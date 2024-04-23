@@ -2,12 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"html/template"
 	"io"
+	"log"
 	"net/http"
-	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -21,6 +21,11 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 }
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	e := echo.New()
 
 	e.Use(middleware.Logger())
@@ -50,9 +55,18 @@ func main() {
 		}
 		summary := CalculateScoreSummary(fakeData, *answers)
 
-		fmt.Print("----------\n")
-		json.NewEncoder(os.Stdout).Encode(summary)
-		fmt.Print("----------\n")
+		log.Println("score summary = ")
+		summaryJson, err := json.Marshal(summary)
+		log.Println(string(summaryJson))
+
+		essayScore, err := CalculateEssayScore(fakeData.EssaySection, answers.EssaySection)
+		if err != nil {
+			return err
+		}
+
+		log.Println("essay score = ")
+		essayScoreJson, err := json.Marshal(essayScore)
+		log.Println(string(essayScoreJson))
 
 		return c.NoContent(http.StatusCreated)
 	})
