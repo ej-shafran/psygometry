@@ -82,10 +82,10 @@ func generalMeasurementRange(score int) [2]int {
 	return measurementRanges[(((score-1)/5)*5)+1]
 }
 
-func CalculateScoreSummary(quiz PsychometryQuiz, answers PsychometryAnswers) (*ScoreSummary, error) {
-	static := calculateStaticScores(quiz, answers)
+func CalculateScoreSummary(psychometry Psychometry, answers PsychometryAnswers) (*ScoreSummary, error) {
+	static := calculateStaticScores(psychometry, answers)
 
-	writing, err := calculateWritingScore(quiz.WritingSection, answers.WritingSection)
+	writing, err := calculateWritingScore(psychometry.WritingSection, answers.WritingSection)
 	if err != nil {
 		return nil, err
 	}

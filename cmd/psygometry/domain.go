@@ -18,34 +18,34 @@ type Section struct {
 	Questions []Question
 }
 
-type PsychometryQuiz struct {
+type Psychometry struct {
 	WritingSection string
-	VSections    [2]Section
-	QSections    [2]Section
-	ESections    [2]Section
+	VSections      [2]Section
+	QSections      [2]Section
+	ESections      [2]Section
 }
 
 type PsychometryAnswers struct {
 	WritingSection string
-	VSections    [2][]int
-	QSections    [2][]int
-	ESections    [2][]int
+	VSections      [2][]int
+	QSections      [2][]int
+	ESections      [2][]int
 }
 
-func newPsychometryAnswers(quiz PsychometryQuiz) PsychometryAnswers {
+func newPsychometryAnswers(psychometry Psychometry) PsychometryAnswers {
 	answers := PsychometryAnswers{
 		WritingSection: "",
 		VSections: [2][]int{
-			make([]int, len(quiz.VSections[0].Questions)),
-			make([]int, len(quiz.VSections[1].Questions)),
+			make([]int, len(psychometry.VSections[0].Questions)),
+			make([]int, len(psychometry.VSections[1].Questions)),
 		},
 		QSections: [2][]int{
-			make([]int, len(quiz.QSections[0].Questions)),
-			make([]int, len(quiz.QSections[1].Questions)),
+			make([]int, len(psychometry.QSections[0].Questions)),
+			make([]int, len(psychometry.QSections[1].Questions)),
 		},
 		ESections: [2][]int{
-			make([]int, len(quiz.ESections[0].Questions)),
-			make([]int, len(quiz.ESections[1].Questions)),
+			make([]int, len(psychometry.ESections[0].Questions)),
+			make([]int, len(psychometry.ESections[1].Questions)),
 		},
 	}
 
@@ -75,8 +75,8 @@ var (
 	InvalidIndex  = errors.New("invalid index")
 )
 
-func ParsePsychometryAnswers(form url.Values, quiz PsychometryQuiz) (*PsychometryAnswers, error) {
-	answers := newPsychometryAnswers(quiz)
+func ParsePsychometryAnswers(form url.Values, psychometry Psychometry) (*PsychometryAnswers, error) {
+	answers := newPsychometryAnswers(psychometry)
 
 	r := regexp.MustCompile("[\\][.]+")
 
@@ -150,8 +150,8 @@ func ParsePsychometryAnswers(form url.Values, quiz PsychometryQuiz) (*Psychometr
 	return &answers, nil
 }
 
-func generateFakeData() PsychometryQuiz {
-	quiz := PsychometryQuiz{
+func generateFakeData() Psychometry {
+	psychometry := Psychometry{
 		WritingSection: "Please write an essay on the importance of storytelling in modern cinema.",
 		VSections: [2]Section{
 			{
@@ -250,5 +250,5 @@ func generateFakeData() PsychometryQuiz {
 			},
 		},
 	}
-	return quiz
+	return psychometry
 }

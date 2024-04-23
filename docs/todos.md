@@ -1,11 +1,11 @@
 # Project TODOs
 
 - [x] Create a basic HTMX website
-- [x] Create data structure for quiz
+- [x] Create data structure for PET
 - [x] Create fake data
-- [x] Render quiz data in the client, without sending correct answers
-- [x] Create data structure for quiz answers
-- [x] Send quiz answers to server
+- [x] Render PET data in the client, without sending correct answers
+- [x] Create data structure for PET answers
+- [x] Send PET answers to server
 - [x] Parse answers from request
   - [x] Test
 - [x] Calculate static scores
@@ -18,5 +18,5 @@
 - [ ] Add time limits
 - [ ] Add styles
 - [ ] Connect to a database
-- [ ] Fill database with existing/example psychometry quizzes
+- [ ] Fill database with existing/example psychometry tests
 - [ ] Optional: allow users to upload images and recognize text within them

@@ -10,31 +10,36 @@ import (
 	"testing/quick"
 )
 
-func makeSection(size int) Section {
-	return Section{Kind: "", Questions: make([]Question, size)}
-}
-
-func makeSectionArray(size int) [2]Section {
-	return [2]Section{makeSection(size), makeSection(size)}
-}
-
-func (PsychometryQuiz) Generate(rand *rand.Rand, size int) reflect.Value {
-	quiz := PsychometryQuiz{
-		WritingSection: "",
-		VSections:    makeSectionArray(size),
-		QSections:    makeSectionArray(size),
-		ESections:    makeSectionArray(size),
+func makeSection(size int, rand *rand.Rand) Section {
+	questions := make([]Question, size)
+	for i := range questions {
+		questions[i] = Question{CorrectOption: rand.Intn(3)}
 	}
-	return reflect.ValueOf(quiz)
+
+	return Section{Kind: "", Questions: questions}
+}
+
+func makeSectionArray(size int, rand *rand.Rand) [2]Section {
+	return [2]Section{makeSection(size, rand), makeSection(size, rand)}
+}
+
+func (Psychometry) Generate(rand *rand.Rand, size int) reflect.Value {
+	psychometry := Psychometry{
+		WritingSection: "",
+		VSections:    makeSectionArray(size, rand),
+		QSections:    makeSectionArray(size, rand),
+		ESections:    makeSectionArray(size, rand),
+	}
+	return reflect.ValueOf(psychometry)
 }
 
 // Test: parsing an answer form with only an essay is done successfully
 func TestParsePsychometryAnswers_success(t *testing.T) {
-	success := func(quiz PsychometryQuiz, writing string) bool {
+	success := func(psychometry Psychometry, writing string) bool {
 		form := url.Values{}
 		form.Add("WritingSection", writing)
 
-		a, err := ParsePsychometryAnswers(form, quiz)
+		a, err := ParsePsychometryAnswers(form, psychometry)
 		return err == nil && a.WritingSection == writing
 	}
 
@@ -69,8 +74,8 @@ func (invalidKeyValues) Generate(rand *rand.Rand, size int) reflect.Value {
 }
 
 func TestParsePsychometryAnswers_invalidKey(t *testing.T) {
-	invalidKey := func(quiz PsychometryQuiz, form invalidKeyValues) bool {
-		_, err := ParsePsychometryAnswers(url.Values(form), quiz)
+	invalidKey := func(psychometry Psychometry, form invalidKeyValues) bool {
+		_, err := ParsePsychometryAnswers(url.Values(form), psychometry)
 		return err == InvalidKey
 	}
 
@@ -94,8 +99,8 @@ func (missingIndexValues) Generate(rand *rand.Rand, size int) reflect.Value {
 }
 
 func TestParsePsychometryAnswers_missingIndex(t *testing.T) {
-	missingIndex := func(quiz PsychometryQuiz, form missingIndexValues) bool {
-		_, err := ParsePsychometryAnswers(url.Values(form), quiz)
+	missingIndex := func(psychometry Psychometry, form missingIndexValues) bool {
+		_, err := ParsePsychometryAnswers(url.Values(form), psychometry)
 		return err == MissingIndex
 	}
 
@@ -119,8 +124,8 @@ func (deformedIndexValues) Generate(rand *rand.Rand, size int) reflect.Value {
 }
 
 func TestParsePsychometryAnswers_deformedIndex(t *testing.T) {
-	deformedIndex := func(quiz PsychometryQuiz, form deformedIndexValues) bool {
-		_, err := ParsePsychometryAnswers(url.Values(form), quiz)
+	deformedIndex := func(psychometry Psychometry, form deformedIndexValues) bool {
+		_, err := ParsePsychometryAnswers(url.Values(form), psychometry)
 		return err == DeformedIndex
 	}
 
@@ -149,8 +154,8 @@ func (invalidIndexValues) Generate(rand *rand.Rand, size int) reflect.Value {
 }
 
 func TestParsePsychometryAnswers_invalidIndex(t *testing.T) {
-	invalidIndex := func(quiz PsychometryQuiz, form invalidIndexValues) bool {
-		_, err := ParsePsychometryAnswers(url.Values(form), quiz)
+	invalidIndex := func(psychometry Psychometry, form invalidIndexValues) bool {
+		_, err := ParsePsychometryAnswers(url.Values(form), psychometry)
 		return err == InvalidIndex
 	}
 

@@ -5,10 +5,10 @@ package main
 // "Raw scores on the multiple-choice sections: Each correct answer is worth one point. The number of correct answers in each domain is equal to the raw score in that domain." - [nite.org.il]
 //
 // [nite.org.il]: https://www.nite.org.il/psychometric-entrance-test/scores/calculation/?lang=en
-func rawCategoryScore(quizSections [2]Section, answerSections [2][]int) int {
+func rawCategoryScore(psychometrySections [2]Section, answerSections [2][]int) int {
 	score := 0
 
-	for i, section := range quizSections {
+	for i, section := range psychometrySections {
 		for j, question := range section.Questions {
 			option := answerSections[i][j]
 			if option == question.CorrectOption {
@@ -27,22 +27,22 @@ func rawCategoryScore(quizSections [2]Section, answerSections [2][]int) int {
 // "Scores in each of the three test domains: In order to compare the scores of examinees who took different versions of the test or who took the test in different languages or on different dates, the raw scores for the writing task and the raw scores for the multiple-choice sections in each of the three test domains are converted to a uniform scale. The verbal reasoning score includes the score on the writing task, which is weighted at 25%. The scale for scores in each of the three domains is from 50 to 150." - [nite.org.il]
 //
 // [nite.org.il]: https://www.nite.org.il/psychometric-entrance-test/scores/calculation/?lang=en
-func uniformCategoryScore(quizSections [2]Section, rawScore int) int {
-	totalQuestions := len(quizSections[0].Questions) + len(quizSections[1].Questions)
+func uniformCategoryScore(psychometrySections [2]Section, rawScore int) int {
+	totalQuestions := len(psychometrySections[0].Questions) + len(psychometrySections[1].Questions)
 	percent := rawScore * 100 / totalQuestions
 	return percent + 50
 }
 
-func calculateStaticScores(quiz PsychometryQuiz, answers PsychometryAnswers) Scores {
+func calculateStaticScores(psychometry Psychometry, answers PsychometryAnswers) Scores {
 	scores := Scores{}
 
-	scores.VRaw = rawCategoryScore(quiz.VSections, answers.VSections)
-	scores.QRaw = rawCategoryScore(quiz.QSections, answers.QSections)
-	scores.ERaw = rawCategoryScore(quiz.ESections, answers.ESections)
+	scores.VRaw = rawCategoryScore(psychometry.VSections, answers.VSections)
+	scores.QRaw = rawCategoryScore(psychometry.QSections, answers.QSections)
+	scores.ERaw = rawCategoryScore(psychometry.ESections, answers.ESections)
 
-	scores.VUniform = uniformCategoryScore(quiz.VSections, scores.VRaw)
-	scores.QUniform = uniformCategoryScore(quiz.QSections, scores.QRaw)
-	scores.EUniform = uniformCategoryScore(quiz.ESections, scores.ERaw)
+	scores.VUniform = uniformCategoryScore(psychometry.VSections, scores.VRaw)
+	scores.QUniform = uniformCategoryScore(psychometry.QSections, scores.QRaw)
+	scores.EUniform = uniformCategoryScore(psychometry.ESections, scores.ERaw)
 
 	scores.MultiCategoryUniform = multiCategoryUniform(scores.VUniform, scores.QUniform, scores.EUniform)
 	scores.VerbalFocusUniform = verbalFocusUniform(scores.VUniform, scores.QUniform, scores.EUniform)

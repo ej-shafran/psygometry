@@ -8,21 +8,8 @@ import (
 )
 
 type scoreSummaryInput struct {
-	quiz    PsychometryQuiz
+	psychometry    Psychometry
 	answers PsychometryAnswers
-}
-
-func makeQuizSection(size int, rand *rand.Rand) Section {
-	questions := make([]Question, size)
-	for i := range questions {
-		questions[i] = Question{CorrectOption: rand.Intn(3)}
-	}
-
-	return Section{Kind: "", Questions: questions}
-}
-
-func makeQuizSectionArray(size int, rand *rand.Rand) [2]Section {
-	return [2]Section{makeQuizSection(size, rand), makeQuizSection(size, rand)}
 }
 
 func makeAnswerSection(size int) []int {
@@ -44,11 +31,11 @@ func makeAnswerSectionArray(size int, rand *rand.Rand) [2][]int {
 }
 
 func (scoreSummaryInput) Generate(rand *rand.Rand, size int) reflect.Value {
-	quiz := PsychometryQuiz{
+	psychometry := Psychometry{
 		WritingSection: "",
-		VSections:      makeQuizSectionArray(size, rand),
-		QSections:      makeQuizSectionArray(size, rand),
-		ESections:      makeQuizSectionArray(size, rand),
+		VSections:      makeSectionArray(size, rand),
+		QSections:      makeSectionArray(size, rand),
+		ESections:      makeSectionArray(size, rand),
 	}
 	answers := PsychometryAnswers{
 		WritingSection: "",
@@ -57,7 +44,7 @@ func (scoreSummaryInput) Generate(rand *rand.Rand, size int) reflect.Value {
 		ESections:      makeAnswerSectionArray(size, rand),
 	}
 
-	return reflect.ValueOf(scoreSummaryInput{quiz, answers})
+	return reflect.ValueOf(scoreSummaryInput{psychometry, answers})
 }
 
 func rawOutOfBounds(rawScore int, sections [2]Section) bool {
@@ -79,12 +66,12 @@ func generalInvalid(generalScore [2]int) bool {
 // Test: calculating a score summary always returns a valid score summary within the proper ranges
 func TestCalculateScoreSummary_valid(t *testing.T) {
 	valid := func(input scoreSummaryInput) bool {
-		scoreSummary := calculateStaticScores(input.quiz, input.answers)
+		scoreSummary := calculateStaticScores(input.psychometry, input.answers)
 
 		// Ensure the raw scores are never greater than their section sizes or less than 0
-		vRawOutOfBounds := rawOutOfBounds(scoreSummary.VRaw, input.quiz.VSections)
-		qRawOutOfBounds := rawOutOfBounds(scoreSummary.QRaw, input.quiz.QSections)
-		eRawOutOfBounds := rawOutOfBounds(scoreSummary.ERaw, input.quiz.ESections)
+		vRawOutOfBounds := rawOutOfBounds(scoreSummary.VRaw, input.psychometry.VSections)
+		qRawOutOfBounds := rawOutOfBounds(scoreSummary.QRaw, input.psychometry.QSections)
+		eRawOutOfBounds := rawOutOfBounds(scoreSummary.ERaw, input.psychometry.ESections)
 		if vRawOutOfBounds || qRawOutOfBounds || eRawOutOfBounds {
 			return false
 		}
