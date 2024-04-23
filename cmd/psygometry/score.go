@@ -79,7 +79,7 @@ func generalMeasurementRange(score int) [2]int {
 		return [2]int{800, 800}
 	}
 
-	return measurementRanges[((score-1)/5)*5]
+	return measurementRanges[(((score-1)/5)*5)+1]
 }
 
 func CalculateScoreSummary(quiz PsychometryQuiz, answers PsychometryAnswers) (*ScoreSummary, error) {
