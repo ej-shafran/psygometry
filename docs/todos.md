@@ -11,9 +11,12 @@
 - [x] Calculate static scores
   - [x] Test
 - [x] Create basic AI package that grades essays
+- [ ] Calculate full score
 - [ ] Respond with grade, or possibly grade-range
+- [ ] Translate to Hebrew
 - [ ] Properly paginate between sections
 - [ ] Add time limits
+- [ ] Add styles
 - [ ] Connect to a database
 - [ ] Fill database with existing/example psychometry quizzes
 - [ ] Optional: allow users to upload images and recognize text within them
