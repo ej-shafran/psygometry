@@ -1,6 +1,6 @@
 module github.com/ej-shafran/psygometry
 
-go 1.19
+go 1.22
 
 require github.com/labstack/echo/v4 v4.12.0
 
