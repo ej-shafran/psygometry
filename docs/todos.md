@@ -12,7 +12,7 @@
   - [x] Test
 - [x] Create basic AI package that grades essays
 - [x] Calculate full score
-- [ ] Respond with grade, or possibly grade-range
+- [x] Respond with grade, or possibly grade-range
 - [ ] Translate to Hebrew
 - [ ] Properly paginate between sections
 - [ ] Add time limits

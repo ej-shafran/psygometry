@@ -13,7 +13,7 @@
 </head>
 
 <body>
-	<form hx-post="/answers" hx-swap="none" hx-on::after-request="this.reset()">
+	<form hx-post="/answers" hx-swap="beforebegin" hx-on::after-request="this.reset()">
 		{{template "writing" .WritingSection}}
 
 		{{template "sections" .VSections}}

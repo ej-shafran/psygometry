@@ -1,0 +1,100 @@
+{{define "scores"}}
+
+<div>
+	<h2>Dynamic Scores</h2>
+
+	<p role="doc-subtitle">These scores are calculated including the AI grading of your essay. For static scores, which don't include any AI usage, see below.</p>
+
+	<dl>
+		<dt>Multi-Category General Score:</dt>
+		<dd>{{index .DynamicScores.MultiCategoryGeneral 0}} - {{index .DynamicScores.MultiCategoryGeneral 1}}</dd>
+
+		<dt>Verbal-Focus General Score:</dt>
+		<dd>{{index .DynamicScores.VerbalFocusGeneral 0}} - {{index .DynamicScores.VerbalFocusGeneral 1}}</dd>
+
+		<dt>Quantitative-Focus General Score:</dt>
+		<dd>{{index .DynamicScores.QuantitativeFocusGeneral 0}} - {{index .DynamicScores.QuantitativeFocusGeneral 1}}</dd>
+	</dl>
+</div>
+
+<div>
+	<h2>Static Scores</h2>
+
+	<dl>
+		<dt>Multi-Category General Score:</dt>
+		<dd>{{index .StaticScores.MultiCategoryGeneral 0}} - {{index .StaticScores.MultiCategoryGeneral 1}}</dd>
+
+		<dt>Verbal-Focus General Score:</dt>
+		<dd>{{index .StaticScores.VerbalFocusGeneral 0}} - {{index .StaticScores.VerbalFocusGeneral 1}}</dd>
+
+		<dt>Quantitative-Focus General Score:</dt>
+		<dd>{{index .StaticScores.QuantitativeFocusGeneral 0}} - {{index .StaticScores.QuantitativeFocusGeneral 1}}</dd>
+	</dl>
+</div>
+
+<div>
+	<h2>Writing Overview</h2>
+
+	<p role="doc-subtitle">This is the AI overview of your essay for the writing section.</p>
+
+	<dl>
+		<dt>Linguistic Score (out of 6):</dt>
+		<dd>{{.WritingScore.Linguistic}}</dd>
+
+		<dt>Content Score (out of 6):</dt>
+		<dd>{{.WritingScore.Content}}</dd>
+
+		<dt>Explanation for scores, given by AI:</dt>
+		<dd>{{.WritingScore.Explanation}}</dd>
+	</dl>
+</div>
+
+<div>
+	<h2>Raw/Uniform Scores</h2>
+
+	<p role="doc-subtitle">The scores above are calculated based on the "raw" and "uniform" scores. These can be useful to understand how many questions were incorrectly answered, and in which sections.</p>
+
+	<p><i>Raw</i> scores are simply the amount of answers you answered correctly in that specific domain, over all the relevant sections. <i>Uniform</i> scores are that raw score normalized to a scale between 50 and 150.</p>
+
+	<h3>Static Raw/Uniform Scores</h3>
+
+	<dl>
+		<dt>Verbal Domain:</dt>
+
+		<dd>
+			<dl>
+				<dt>Raw:</dt>
+				<dd>{{.StaticScores.VRaw}}</dd>
+
+				<dt>Uniform:</dt>
+				<dd>{{.StaticScores.VUniform}}</dd>
+			</dl>
+		</dd>
+
+		<dt>Quantitative Domain:</dt>
+
+		<dd>
+			<dl>
+				<dt>Raw:</dt>
+				<dd>{{.StaticScores.QRaw}}</dd>
+
+				<dt>Uniform:</dt>
+				<dd>{{.StaticScores.QUniform}}</dd>
+			</dl>
+		</dd>
+
+		<dt>English Domain:</dt>
+
+		<dd>
+			<dl>
+				<dt>Raw:</dt>
+				<dd>{{.StaticScores.ERaw}}</dd>
+
+				<dt>Uniform:</dt>
+				<dd>{{.StaticScores.EUniform}}</dd>
+			</dl>
+		</dd>
+	</dl>
+</div>
+
+{{end}}
