@@ -27,7 +27,7 @@ func writingOutOfBounds(writing string) *WritingScore {
 		return &WritingScore{
 			Linguistic:  0,
 			Content:     0,
-			Explanation: fmt.Sprintf("The writing was below the minimum line count of %d.", minimumLines),
+			Explanation: fmt.Sprintf("הכתיבה הייתה מתחת למספר השורות המינימלי של %d.", minimumLines),
 		}
 	}
 
@@ -35,7 +35,7 @@ func writingOutOfBounds(writing string) *WritingScore {
 		return &WritingScore{
 			Linguistic:  0,
 			Content:     0,
-			Explanation: fmt.Sprintf("The writing was above the maximum line count of %d.", maximumLines),
+			Explanation: fmt.Sprintf("הכתיבה הייתה מעל למספר השורות המקסימלי של %d.", maximumLines),
 		}
 	}
 
@@ -67,9 +67,9 @@ The prompt (between the "-----" delimiters):
 
 The rules:
 
-- The "linguistic" field must be a score between 0 and 6 grading the essay's grammar, spelling, and linguistic level.
-- The "content" field must be a score between 0 and 6 grading the essay's coherency, structure, and critical thinking as it relates to the prompt.
-- The "explanation" field must be a textual explanation of why you have chosen the two grades listed above.
+- The "linguistic" field must be a score between 0 and 6 grading the essay's grammar, spelling, and linguistic level. The essay should be in Hebrew. If it is not, this field should be 0.
+- The "content" field must be a score between 0 and 6 grading the essay's coherency, structure, and critical thinking as it relates to the prompt. The essay should be in Hebrew. If it is not, this field should be 0.
+- The "explanation" field must be a textual explanation of why you have chosen the two grades listed above. It should be in Hebrew.
 
 Here is the essay (between the "-----" delimiters):
 -----

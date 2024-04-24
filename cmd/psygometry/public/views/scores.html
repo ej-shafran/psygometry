@@ -1,96 +1,96 @@
 {{define "scores"}}
 
 <div>
-	<h2>Dynamic Scores</h2>
+	<h2>ציונים דינמיים</h2>
 
-	<p role="doc-subtitle">These scores are calculated including the AI grading of your essay. For static scores, which don't include any AI usage, see below.</p>
+	<p role="doc-subtitle">הציונים האלו מחושבים כולל הערכת המודל של המערכת הידעה. לציונים סטטיים, שאינם כוללים שימוש במערכת, ראה למטה.</p>
 
 	<dl>
-		<dt>Multi-Category General Score:</dt>
+		<dt>ציון כללי רב-קטגוריה:</dt>
 		<dd>{{index .DynamicScores.MultiCategoryGeneral 0}} - {{index .DynamicScores.MultiCategoryGeneral 1}}</dd>
 
-		<dt>Verbal-Focus General Score:</dt>
+		<dt>ציון כללי דיבורי:</dt>
 		<dd>{{index .DynamicScores.VerbalFocusGeneral 0}} - {{index .DynamicScores.VerbalFocusGeneral 1}}</dd>
 
-		<dt>Quantitative-Focus General Score:</dt>
+		<dt>ציון כללי כמותי:</dt>
 		<dd>{{index .DynamicScores.QuantitativeFocusGeneral 0}} - {{index .DynamicScores.QuantitativeFocusGeneral 1}}</dd>
 	</dl>
 </div>
 
 <div>
-	<h2>Static Scores</h2>
+	<h2>ציונים סטטיים</h2>
 
 	<dl>
-		<dt>Multi-Category General Score:</dt>
+		<dt>ציון כללי רב-קטגוריה:</dt>
 		<dd>{{index .StaticScores.MultiCategoryGeneral 0}} - {{index .StaticScores.MultiCategoryGeneral 1}}</dd>
 
-		<dt>Verbal-Focus General Score:</dt>
+		<dt>ציון כללי דיבורי:</dt>
 		<dd>{{index .StaticScores.VerbalFocusGeneral 0}} - {{index .StaticScores.VerbalFocusGeneral 1}}</dd>
 
-		<dt>Quantitative-Focus General Score:</dt>
+		<dt>ציון כללי כמותי:</dt>
 		<dd>{{index .StaticScores.QuantitativeFocusGeneral 0}} - {{index .StaticScores.QuantitativeFocusGeneral 1}}</dd>
 	</dl>
 </div>
 
 <div>
-	<h2>Writing Overview</h2>
+	<h2>סקירת כתיבה</h2>
 
-	<p role="doc-subtitle">This is the AI overview of your essay for the writing section.</p>
+	<p role="doc-subtitle">זוהי סקירת המערכת לשיעור הכתיבה שלך.</p>
 
 	<dl>
-		<dt>Linguistic Score (out of 6):</dt>
+		<dt>ציון לשוני (מתוך 6):</dt>
 		<dd>{{.WritingScore.Linguistic}}</dd>
 
-		<dt>Content Score (out of 6):</dt>
+		<dt>ציון תוכני (מתוך 6):</dt>
 		<dd>{{.WritingScore.Content}}</dd>
 
-		<dt>Explanation for scores, given by AI:</dt>
+		<dt>הסבר לציונים, מסופק על ידי המערכת:</dt>
 		<dd>{{.WritingScore.Explanation}}</dd>
 	</dl>
 </div>
 
 <div>
-	<h2>Raw/Uniform Scores</h2>
+	<h2>ציונים גלמים/אחידים</h2>
 
-	<p role="doc-subtitle">The scores above are calculated based on the "raw" and "uniform" scores. These can be useful to understand how many questions were incorrectly answered, and in which sections.</p>
+	<p role="doc-subtitle">הציונים מחושבים על בסיס הציונים ה"גלמיים" וה"אחידים". ניתן להשתמש בהם להבנת מספר השאלות שנענו בצורה שגויה ובאילו תחומים.</p>
 
-	<p><i>Raw</i> scores are simply the amount of answers you answered correctly in that specific domain, over all the relevant sections. <i>Uniform</i> scores are that raw score normalized to a scale between 50 and 150.</p>
+	<p><i>ציוני גלם</i> הם סתם כמות התשובות הנכונות שנענו באותו התחום הספציפי, על כל חלקי המבחן הרלוונטיים. ציוני <i>אחיד</i> הם ציון גלמי זה שהונורמל לקנה מידה בין 50 ל-150.</p>
 
-	<h3>Static Raw/Uniform Scores</h3>
+	<h3>ציונים גלמיים/אחידים סטטיים</h3>
 
 	<dl>
-		<dt>Verbal Domain:</dt>
+		<dt>תחום דיבור:</dt>
 
 		<dd>
 			<dl>
-				<dt>Raw:</dt>
+				<dt>גלמי:</dt>
 				<dd>{{.StaticScores.VRaw}}</dd>
 
-				<dt>Uniform:</dt>
+				<dt>אחיד:</dt>
 				<dd>{{.StaticScores.VUniform}}</dd>
 			</dl>
 		</dd>
 
-		<dt>Quantitative Domain:</dt>
+		<dt>תחום כמותי:</dt>
 
 		<dd>
 			<dl>
-				<dt>Raw:</dt>
+				<dt>גלמי:</dt>
 				<dd>{{.StaticScores.QRaw}}</dd>
 
-				<dt>Uniform:</dt>
+				<dt>אחיד:</dt>
 				<dd>{{.StaticScores.QUniform}}</dd>
 			</dl>
 		</dd>
 
-		<dt>English Domain:</dt>
+		<dt>תחום אנגלית:</dt>
 
 		<dd>
 			<dl>
-				<dt>Raw:</dt>
+				<dt>גלמי:</dt>
 				<dd>{{.StaticScores.ERaw}}</dd>
 
-				<dt>Uniform:</dt>
+				<dt>אחיד:</dt>
 				<dd>{{.StaticScores.EUniform}}</dd>
 			</dl>
 		</dd>
