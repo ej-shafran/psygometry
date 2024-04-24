@@ -152,19 +152,19 @@ func ParsePsychometryAnswers(form url.Values, psychometry Psychometry) (*Psychom
 
 func generateFakeData() Psychometry {
 	psychometry := Psychometry{
-		WritingSection: "Please write an essay on the importance of storytelling in modern cinema.",
+		WritingSection: "נא לכתוב חיבור על החשיבות של סיפור סיפורים בקולנוע המודרני.",
 		VSections: [2]Section{
 			{
 				Kind: "V",
 				Questions: []Question{
 					{
-						Content:       "Who played the lead role in the movie 'Inception'?",
-						Options:       [4]string{"Leonardo DiCaprio", "Brad Pitt", "Tom Hanks", "Johnny Depp"},
+						Content:       "מי משחק את הדמות הראשית בסרט 'ההסתערות'?",
+						Options:       [4]string{"ליאונרדו דיקפריו", "בראד פיט", "טום הנקס", "ג'וני דפ"},
 						CorrectOption: 0,
 					},
 					{
-						Content:       "Which movie was not directed by Christopher Nolan?",
-						Options:       [4]string{"Inception", "Legally Blonde", "Interstellar", "Shutter Island"},
+						Content:       "איזה סרט לא נבחר על ידי כריסטופר נולן?",
+						Options:       [4]string{"ההסתערות", "בלונדינית משפטית", "בין הכוכבים", "אי הצנום"},
 						CorrectOption: 1,
 					},
 				},
@@ -173,13 +173,13 @@ func generateFakeData() Psychometry {
 				Kind: "V",
 				Questions: []Question{
 					{
-						Content:       "Who is the author of the 'Game of Thrones' book series?",
-						Options:       [4]string{"J.K. Rowling", "Stephen King", "George R.R. Martin", "J.R.R. Tolkien"},
+						Content:       "מי הוא המחבר של סדרת הספרים 'משחקי הכס'?",
+						Options:       [4]string{"ג'יי. קי. רואלינג", "סטיבן קינג", "ג'ורג' אר.אר. מרטין", "ג'יי.אר.אר. טולקין"},
 						CorrectOption: 2,
 					},
 					{
-						Content:       "Which book series features a character named Harry Potter?",
-						Options:       [4]string{"Harry Potter", "Lord of the Rings", "Game of Thrones", "The Hunger Games"},
+						Content:       "איזו סדרת ספרים כוללת דמות בשם 'הארי פוטר'?",
+						Options:       [4]string{"הארי פוטר", "אדון הטבעות", "משחקי הכס", "המשחקים של הרעב"},
 						CorrectOption: 0,
 					},
 				},
@@ -190,13 +190,13 @@ func generateFakeData() Psychometry {
 				Kind: "Q",
 				Questions: []Question{
 					{
-						Content:       "Which Avenger is known for his green appearance and incredible strength?",
-						Options:       [4]string{"Iron Man", "Captain America", "Thor", "Hulk"},
+						Content:       "איזה אבנג'ר מכונה בגלל המראה הירוק שלו והכוח המדהים שלו?",
+						Options:       [4]string{"איירון מן", "קפטן אמריקה", "תור", "האלק"},
 						CorrectOption: 3,
 					},
 					{
-						Content:       "Who portrayed the character of Black Widow in the Marvel Cinematic Universe?",
-						Options:       [4]string{"Scarlett Johansson", "Gal Gadot", "Angelina Jolie", "Jennifer Lawrence"},
+						Content:       "מי מגלם את הדמות של נרייט שחורה ביקום הסרטים המרובע של מארו?",
+						Options:       [4]string{"סקרלט יוהנסון", "גל גדות", "אנג'לינה ג'ולי", "ג'ניפר לורנס"},
 						CorrectOption: 0,
 					},
 				},
@@ -205,13 +205,13 @@ func generateFakeData() Psychometry {
 				Kind: "Q",
 				Questions: []Question{
 					{
-						Content:       "Which band is known for the song 'Bohemian Rhapsody'?",
-						Options:       [4]string{"The Beatles", "Led Zeppelin", "Queen", "Pink Floyd"},
+						Content:       "איזה להקה מפורסמת בשיר 'בוהמיאן ראפסודיה'?",
+						Options:       [4]string{"הביטלס", "לד זפלין", "קווין", "פלוויד הוויד"},
 						CorrectOption: 2,
 					},
 					{
-						Content:       "Which movie is often referred to as 'the greatest film ever made'?",
-						Options:       [4]string{"The Godfather", "Pulp Fiction", "Goodfellas", "Scarface"},
+						Content:       "איזה סרט לעיתים קרוא 'הסרט הגדול ביותר שנעשה אי פעם'?",
+						Options:       [4]string{"הקרוטונאי", "פיקדון דמים", "בראש ובראש", "פנים שטוחות"},
 						CorrectOption: 0,
 					},
 				},
@@ -222,13 +222,13 @@ func generateFakeData() Psychometry {
 				Kind: "E",
 				Questions: []Question{
 					{
-						Content:       "Who painted the famous artwork 'Starry Night'?",
-						Options:       [4]string{"Monet", "Van Gogh", "Picasso", "Da Vinci"},
+						Content:       "מי צייר את היצירה המפורסמת 'לילה כוכבי'?",
+						Options:       [4]string{"מונה", "ואן גוך", "פיקאסו", "דה וינצ'י"},
 						CorrectOption: 1,
 					},
 					{
-						Content:       "Which composer is known as 'The Genius'?",
-						Options:       [4]string{"Mozart", "Beethoven", "Bach", "Chopin"},
+						Content:       "איזה מלחין מוכר כ 'הגאון'?",
+						Options:       [4]string{"מוצארט", "בטהובן", "באך", "שופין"},
 						CorrectOption: 0,
 					},
 				},
@@ -237,13 +237,13 @@ func generateFakeData() Psychometry {
 				Kind: "E",
 				Questions: []Question{
 					{
-						Content:       "Who won the Academy Award for Best Actress for her role in 'Black Swan'?",
-						Options:       [4]string{"Meryl Streep", "Cate Blanchett", "Julianne Moore", "Natalie Portman"},
+						Content:       "מי זכתה בפרס אוסקר לשחקנית הטובה ביותר על תפקידה ב'ברבור שחור'?",
+						Options:       [4]string{"מריל סטריפ", "קייט בלנשט", "ג'וליאן מור", "נטלי פורטמן"},
 						CorrectOption: 3,
 					},
 					{
-						Content:       "Which director is known for his epic films like 'Schindler's List' and 'Saving Private Ryan'?",
-						Options:       [4]string{"Steven Spielberg", "Martin Scorsese", "Quentin Tarantino", "Christopher Nolan"},
+						Content:       "איזה במאי ידוע בסרטיו האפיים כמו 'רשימת שינדלר' ו'שמור פרטי'?",
+						Options:       [4]string{"סטיבן שפילברג", "מרטין סקורסזה", "קוונטין טרנטינו", "כריסטופר נולן"},
 						CorrectOption: 0,
 					},
 				},

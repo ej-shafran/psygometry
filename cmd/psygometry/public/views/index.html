@@ -2,7 +2,7 @@
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 
 <head>
 	<meta charset="UTF-8">
@@ -13,14 +13,14 @@
 </head>
 
 <body>
-	<form hx-post="/answers" hx-swap="beforebegin" hx-on::after-request="this.reset()">
+	<form hx-post="/answers" hx-swap="afterend" hx-on::after-request="this.reset()">
 		{{template "writing" .WritingSection}}
 
 		{{template "sections" .VSections}}
 		{{template "sections" .QSections}}
 		{{template "sections" .ESections}}
 
-		<button type="submit">Submit</button>
+		<button type="submit">הגשה</button>
 	</form>
 </body>
 
@@ -43,7 +43,7 @@
 {{range $i, $s := .}}
 
 <div>
-	<h2>Section</h2>
+	<h2>פרק</h2>
 
 	{{range $j, $q := $s.Questions}}
 
