@@ -13,7 +13,7 @@
 - [x] Create basic AI package that grades essays
 - [x] Calculate full score
 - [x] Respond with grade, or possibly grade-range
-- [ ] Translate to Hebrew
+- [x] Translate to Hebrew
 - [ ] Properly paginate between sections
 - [ ] Add time limits
 - [ ] Add styles
