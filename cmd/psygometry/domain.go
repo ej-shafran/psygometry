@@ -15,6 +15,7 @@ type Question struct {
 
 type Section struct {
 	Kind      string
+	Index     int
 	Questions []Question
 }
 
@@ -156,6 +157,7 @@ func generateFakeData() Psychometry {
 		VSections: [2]Section{
 			{
 				Kind: "V",
+				Index: 0,
 				Questions: []Question{
 					{
 						Content:       "מי משחק את הדמות הראשית בסרט 'ההסתערות'?",
@@ -171,6 +173,7 @@ func generateFakeData() Psychometry {
 			},
 			{
 				Kind: "V",
+				Index: 1,
 				Questions: []Question{
 					{
 						Content:       "מי הוא המחבר של סדרת הספרים 'משחקי הכס'?",
@@ -188,6 +191,7 @@ func generateFakeData() Psychometry {
 		QSections: [2]Section{
 			{
 				Kind: "Q",
+				Index: 0,
 				Questions: []Question{
 					{
 						Content:       "איזה אבנג'ר מכונה בגלל המראה הירוק שלו והכוח המדהים שלו?",
@@ -203,6 +207,7 @@ func generateFakeData() Psychometry {
 			},
 			{
 				Kind: "Q",
+				Index: 1,
 				Questions: []Question{
 					{
 						Content:       "איזה להקה מפורסמת בשיר 'בוהמיאן ראפסודיה'?",
@@ -220,6 +225,7 @@ func generateFakeData() Psychometry {
 		ESections: [2]Section{
 			{
 				Kind: "E",
+				Index: 0,
 				Questions: []Question{
 					{
 						Content:       "מי צייר את היצירה המפורסמת 'לילה כוכבי'?",
@@ -235,6 +241,7 @@ func generateFakeData() Psychometry {
 			},
 			{
 				Kind: "E",
+				Index: 1,
 				Questions: []Question{
 					{
 						Content:       "מי זכתה בפרס אוסקר לשחקנית הטובה ביותר על תפקידה ב'ברבור שחור'?",

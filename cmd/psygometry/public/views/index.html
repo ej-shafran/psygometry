@@ -40,26 +40,32 @@
 
 {{define "sections"}}
 
-{{range $i, $s := .}}
+{{range .}}
+
+{{template "section" .}}
+
+{{end}}
+
+{{end}}
+
+{{define "section"}}
 
 <div>
 	<h2>פרק</h2>
 
-	{{range $j, $q := $s.Questions}}
+	{{range $j, $q := .Questions}}
 
 	<fieldset>
 		<legend>{{$q.Content}}</legend>
 
 		{{range $k, $o := $q.Options}}
-		<input id="{{$s.Kind}}Sections[{{$i}}][{{$j}}].Options[{{$k}}]"
-			name="{{$s.Kind}}Sections[{{$i}}][{{$j}}]" type="radio" value="{{$k}}">
-		<label for="{{$s.Kind}}Sections[{{$i}}][{{$j}}].Options[{{$k}}]">{{$o}}</label>
+		<input id="{{$.Kind}}Sections[{{$.Index}}][{{$j}}].Options[{{$k}}]"
+			name="{{$.Kind}}Sections[{{$.Index}}][{{$j}}]" type="radio" value="{{$k}}">
+		<label for="{{$.Kind}}Sections[{{$.Index}}][{{$j}}].Options[{{$k}}]">{{$o}}</label>
 		{{end}}
 	</fieldset>
 
 	{{end}}
 </div>
-
-{{end}}
 
 {{end}}
