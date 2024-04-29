@@ -16,9 +16,7 @@
 	<form hx-post="/answers" hx-swap="afterend" hx-on::after-request="this.reset()">
 		{{template "writing" .WritingSection}}
 
-		{{template "sections" .VSections}}
-		{{template "sections" .QSections}}
-		{{template "sections" .ESections}}
+		{{template "sections" .Sections}}
 
 		<button type="submit">הגשה</button>
 	</form>
@@ -51,7 +49,7 @@
 {{define "section"}}
 
 <div>
-	<h2>פרק</h2>
+	<h2>פרק {{template "kind" .}}</h2>
 
 	{{range $j, $q := .Questions}}
 
@@ -59,13 +57,25 @@
 		<legend>{{$q.Content}}</legend>
 
 		{{range $k, $o := $q.Options}}
-		<input id="{{$.Kind}}Sections[{{$.Index}}][{{$j}}].Options[{{$k}}]"
-			name="{{$.Kind}}Sections[{{$.Index}}][{{$j}}]" type="radio" value="{{$k}}">
-		<label for="{{$.Kind}}Sections[{{$.Index}}][{{$j}}].Options[{{$k}}]">{{$o}}</label>
+		<input id="Sections[{{$.Index}}][{{$j}}].Options[{{$k}}]"
+			name="Sections[{{$.Index}}][{{$j}}]" type="radio" value="{{$k}}">
+		<label for="Sections[{{$.Index}}][{{$j}}].Options[{{$k}}]">{{$o}}</label>
 		{{end}}
 	</fieldset>
 
 	{{end}}
 </div>
+
+{{end}}
+
+{{define "kind"}}
+
+{{if eq .Kind "V"}}
+מילולי
+{{else if eq .Kind "Q"}}
+כמותי
+{{else if eq .Kind "E"}}
+אנגלית
+{{end}}
 
 {{end}}

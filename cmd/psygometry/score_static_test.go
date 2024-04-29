@@ -8,47 +8,51 @@ import (
 )
 
 type scoreSummaryInput struct {
-	psychometry    Psychometry
-	answers PsychometryAnswers
+	psychometry Psychometry
+	answers     PsychometryAnswers
 }
 
-func makeAnswerSection(size int) []int {
-	return make([]int, size)
+func makeAnswerSection(rand *rand.Rand, size int) []int {
+	answerSection := make([]int, size)
+
+	for i := range answerSection {
+		answerSection[i] = rand.Intn(3)
+	}
+
+	return answerSection
 }
 
-func makeAnswerSectionArray(size int, rand *rand.Rand) [2][]int {
-	a := makeAnswerSection(size)
-	for i := range a {
-		a[i] = rand.Intn(3)
+func makeAnswerSectionArray(rand *rand.Rand, size int) [][]int {
+	answerSections := make([][]int, size)
+
+	for i := range answerSections {
+		answerSections[i] = makeAnswerSection(rand, size)
 	}
 
-	b := makeAnswerSection(size)
-	for i := range b {
-		b[i] = rand.Intn(3)
-	}
-
-	return [2][]int{a, b}
+	return answerSections
 }
 
 func (scoreSummaryInput) Generate(rand *rand.Rand, size int) reflect.Value {
 	psychometry := Psychometry{
 		WritingSection: "",
-		VSections:      makeSectionArray(size, rand),
-		QSections:      makeSectionArray(size, rand),
-		ESections:      makeSectionArray(size, rand),
+		Sections:       make([]Section, size),
 	}
 	answers := PsychometryAnswers{
 		WritingSection: "",
-		VSections:      makeAnswerSectionArray(size, rand),
-		QSections:      makeAnswerSectionArray(size, rand),
-		ESections:      makeAnswerSectionArray(size, rand),
+		Sections:       makeAnswerSectionArray(rand, size),
 	}
 
 	return reflect.ValueOf(scoreSummaryInput{psychometry, answers})
 }
 
-func rawOutOfBounds(rawScore int, sections [2]Section) bool {
-	return rawScore < 0 || rawScore > len(sections[0].Questions)+len(sections[1].Questions)
+func rawOutOfBounds(rawScore int, sections []Section) bool {
+	totalQuestions := 0
+	for _, section := range sections {
+		totalQuestions += len(section.Questions)
+
+	}
+
+	return rawScore < 0 || rawScore > totalQuestions
 }
 
 func uniformOutOfBounds(uniformScore int) bool {
@@ -69,9 +73,9 @@ func TestCalculateScoreSummary_valid(t *testing.T) {
 		scoreSummary := calculateStaticScores(input.psychometry, input.answers)
 
 		// Ensure the raw scores are never greater than their section sizes or less than 0
-		vRawOutOfBounds := rawOutOfBounds(scoreSummary.VRaw, input.psychometry.VSections)
-		qRawOutOfBounds := rawOutOfBounds(scoreSummary.QRaw, input.psychometry.QSections)
-		eRawOutOfBounds := rawOutOfBounds(scoreSummary.ERaw, input.psychometry.ESections)
+		vRawOutOfBounds := rawOutOfBounds(scoreSummary.VRaw, input.psychometry.GetSections(V))
+		qRawOutOfBounds := rawOutOfBounds(scoreSummary.QRaw, input.psychometry.GetSections(Q))
+		eRawOutOfBounds := rawOutOfBounds(scoreSummary.ERaw, input.psychometry.GetSections(E))
 		if vRawOutOfBounds || qRawOutOfBounds || eRawOutOfBounds {
 			return false
 		}
