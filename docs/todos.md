@@ -14,7 +14,7 @@
 - [x] Calculate full score
 - [x] Respond with grade, or possibly grade-range
 - [x] Translate to Hebrew
-- [ ] Properly paginate between sections
+- [x] Properly paginate between sections
 - [ ] Add time limits
 - [ ] Add styles
 - [ ] Connect to a database

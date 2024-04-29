@@ -13,63 +13,72 @@ type Question struct {
 	CorrectOption int
 }
 
+type SectionKind string
+
+const (
+	V SectionKind = "V"
+	Q SectionKind = "Q"
+	E SectionKind = "E"
+)
+
 type Section struct {
-	Kind      string
+	Kind      SectionKind
+	Index     int
+	IsCounted bool
 	Questions []Question
 }
 
 type Psychometry struct {
 	WritingSection string
-	VSections      [2]Section
-	QSections      [2]Section
-	ESections      [2]Section
+	Sections       []Section
+}
+
+func (p *Psychometry) GetSections(kind SectionKind) []Section {
+	sections := []Section{}
+
+	for _, section := range p.Sections {
+		if section.Kind == kind && section.IsCounted {
+			sections = append(sections, section)
+		}
+	}
+
+	return sections
 }
 
 type PsychometryAnswers struct {
 	WritingSection string
-	VSections      [2][]int
-	QSections      [2][]int
-	ESections      [2][]int
+	Sections       [][]int
+}
+
+func (a *PsychometryAnswers) GetSections(psychometry Psychometry, kind SectionKind) [][]int {
+	answerSections := [][]int{}
+
+	for i, section := range psychometry.Sections {
+		if section.Kind == kind && section.IsCounted {
+			answerSections = append(answerSections, a.Sections[i])
+		}
+	}
+
+	return answerSections
 }
 
 func newPsychometryAnswers(psychometry Psychometry) PsychometryAnswers {
+	answerSections := make([][]int, len(psychometry.Sections))
+	for i, section := range psychometry.Sections {
+		answerSections[i] = make([]int, len(section.Questions))
+		for j := range answerSections[i] {
+			answerSections[i][j] = -1
+		}
+	}
+
 	answers := PsychometryAnswers{
 		WritingSection: "",
-		VSections: [2][]int{
-			make([]int, len(psychometry.VSections[0].Questions)),
-			make([]int, len(psychometry.VSections[1].Questions)),
-		},
-		QSections: [2][]int{
-			make([]int, len(psychometry.QSections[0].Questions)),
-			make([]int, len(psychometry.QSections[1].Questions)),
-		},
-		ESections: [2][]int{
-			make([]int, len(psychometry.ESections[0].Questions)),
-			make([]int, len(psychometry.ESections[1].Questions)),
-		},
+		Sections:       answerSections,
 	}
-
-	for _, s := range answers.VSections {
-		for j := range s {
-			s[j] = -1
-		}
-	}
-	for _, s := range answers.QSections {
-		for j := range s {
-			s[j] = -1
-		}
-	}
-	for _, s := range answers.ESections {
-		for j := range s {
-			s[j] = -1
-		}
-	}
-
 	return answers
 }
 
 var (
-	InvalidKey    = errors.New("invalid key")
 	MissingIndex  = errors.New("missing index")
 	DeformedIndex = errors.New("deformed index")
 	InvalidIndex  = errors.New("invalid index")
@@ -88,8 +97,8 @@ func ParsePsychometryAnswers(form url.Values, psychometry Psychometry) (*Psychom
 			continue
 		}
 
-		if path[0] != "VSections" && path[0] != "QSections" && path[0] != "ESections" {
-			return nil, InvalidKey
+		if path[0] != "Sections" {
+			continue
 		}
 
 		if len(path) < 2 {
@@ -99,7 +108,7 @@ func ParsePsychometryAnswers(form url.Values, psychometry Psychometry) (*Psychom
 		if err != nil {
 			return nil, DeformedIndex
 		}
-		if sIndex != 0 && sIndex != 1 {
+		if sIndex < 0 || sIndex >= len(psychometry.Sections) {
 			return nil, InvalidIndex
 		}
 
@@ -125,26 +134,11 @@ func ParsePsychometryAnswers(form url.Values, psychometry Psychometry) (*Psychom
 			return nil, InvalidIndex
 		}
 
-		var arr [2][]int
-		switch path[0] {
-		case "VSections":
-			arr = answers.VSections
-			break
-		case "QSections":
-			arr = answers.QSections
-			break
-		case "ESections":
-			arr = answers.ESections
-			break
-		default:
-			panic("Invariant")
-		}
-
-		if qIndex < 0 || qIndex >= len(arr[sIndex]) {
+		if qIndex < 0 || qIndex >= len(answers.Sections[sIndex]) {
 			return nil, InvalidIndex
 		}
 
-		arr[sIndex][qIndex] = value
+		answers.Sections[sIndex][qIndex] = value
 	}
 
 	return &answers, nil
@@ -153,9 +147,11 @@ func ParsePsychometryAnswers(form url.Values, psychometry Psychometry) (*Psychom
 func generateFakeData() Psychometry {
 	psychometry := Psychometry{
 		WritingSection: "נא לכתוב חיבור על החשיבות של סיפור סיפורים בקולנוע המודרני.",
-		VSections: [2]Section{
+		Sections: []Section{
 			{
-				Kind: "V",
+				Kind:      V,
+				Index:     0,
+				IsCounted: true,
 				Questions: []Question{
 					{
 						Content:       "מי משחק את הדמות הראשית בסרט 'ההסתערות'?",
@@ -170,7 +166,9 @@ func generateFakeData() Psychometry {
 				},
 			},
 			{
-				Kind: "V",
+				Kind:      V,
+				Index:     1,
+				IsCounted: true,
 				Questions: []Question{
 					{
 						Content:       "מי הוא המחבר של סדרת הספרים 'משחקי הכס'?",
@@ -184,10 +182,10 @@ func generateFakeData() Psychometry {
 					},
 				},
 			},
-		},
-		QSections: [2]Section{
 			{
-				Kind: "Q",
+				Kind:      Q,
+				Index:     2,
+				IsCounted: true,
 				Questions: []Question{
 					{
 						Content:       "איזה אבנג'ר מכונה בגלל המראה הירוק שלו והכוח המדהים שלו?",
@@ -202,7 +200,9 @@ func generateFakeData() Psychometry {
 				},
 			},
 			{
-				Kind: "Q",
+				Kind:      Q,
+				Index:     3,
+				IsCounted: true,
 				Questions: []Question{
 					{
 						Content:       "איזה להקה מפורסמת בשיר 'בוהמיאן ראפסודיה'?",
@@ -216,10 +216,10 @@ func generateFakeData() Psychometry {
 					},
 				},
 			},
-		},
-		ESections: [2]Section{
 			{
-				Kind: "E",
+				Kind:      E,
+				Index:     4,
+				IsCounted: true,
 				Questions: []Question{
 					{
 						Content:       "מי צייר את היצירה המפורסמת 'לילה כוכבי'?",
@@ -234,7 +234,9 @@ func generateFakeData() Psychometry {
 				},
 			},
 			{
-				Kind: "E",
+				Kind:      E,
+				Index:     5,
+				IsCounted: true,
 				Questions: []Question{
 					{
 						Content:       "מי זכתה בפרס אוסקר לשחקנית הטובה ביותר על תפקידה ב'ברבור שחור'?",

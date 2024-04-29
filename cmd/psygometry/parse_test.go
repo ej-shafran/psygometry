@@ -10,76 +10,79 @@ import (
 	"testing/quick"
 )
 
-func makeSection(size int, rand *rand.Rand) Section {
-	questions := make([]Question, size)
+func makeSection(rand *rand.Rand, size int) Section {
+	// At minimum, each section must have one answer
+	questions := make([]Question, size+1)
 	for i := range questions {
 		questions[i] = Question{CorrectOption: rand.Intn(3)}
 	}
 
-	return Section{Kind: "", Questions: questions}
+	kinds := []SectionKind{V, Q, E}
+	kind := kinds[rand.Intn(len(kinds))]
+
+	return Section{Kind: kind, Questions: questions, IsCounted: true}
 }
 
-func makeSectionArray(size int, rand *rand.Rand) [2]Section {
-	return [2]Section{makeSection(size, rand), makeSection(size, rand)}
+func makeSectionArray(rand *rand.Rand, size int) []Section {
+	sections := make([]Section, size)
+
+	for i := range sections {
+		sections[i] = makeSection(rand, size)
+	}
+
+	return sections
 }
 
 func (Psychometry) Generate(rand *rand.Rand, size int) reflect.Value {
 	psychometry := Psychometry{
 		WritingSection: "",
-		VSections:    makeSectionArray(size, rand),
-		QSections:    makeSectionArray(size, rand),
-		ESections:    makeSectionArray(size, rand),
+		Sections:       makeSectionArray(rand, size),
 	}
 	return reflect.ValueOf(psychometry)
 }
 
-// Test: parsing an answer form with only an essay is done successfully
-func TestParsePsychometryAnswers_success(t *testing.T) {
-	success := func(psychometry Psychometry, writing string) bool {
-		form := url.Values{}
-		form.Add("WritingSection", writing)
+// Test: parsing an answer form with only a writing section and other irrelevant keys is done successfully
+type successValues url.Values
 
-		a, err := ParsePsychometryAnswers(form, psychometry)
-		return err == nil && a.WritingSection == writing
-	}
-
-	if err := quick.Check(success, nil); err != nil {
-		t.Error(err)
-	}
-}
-
-// Test: parsing an answer form with a random key errors with `InvalidKey`
-type invalidKeyValues url.Values
-
-func (invalidKeyValues) Generate(rand *rand.Rand, size int) reflect.Value {
+func (successValues) Generate(rand *rand.Rand, size int) reflect.Value {
 	form := url.Values{}
 
 	alphabet := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
-	var keyBuffer bytes.Buffer
-	for i := 0; i < size; i++ {
-		index := rand.Intn(len(alphabet))
-		keyBuffer.WriteString(string(alphabet[index]))
+	for range size {
+		var keyBuffer bytes.Buffer
+		for i := 0; i < size; i++ {
+			index := rand.Intn(len(alphabet))
+			keyBuffer.WriteString(string(alphabet[index]))
+		}
+
+		var valueBuffer bytes.Buffer
+		for i := 0; i < size; i++ {
+			index := rand.Intn(len(alphabet))
+			valueBuffer.WriteString(string(alphabet[index]))
+		}
+
+		form.Add(keyBuffer.String(), valueBuffer.String())
 	}
 
-	var valueBuffer bytes.Buffer
+	var writingBuffer bytes.Buffer
 	for i := 0; i < size; i++ {
 		index := rand.Intn(len(alphabet))
-		valueBuffer.WriteString(string(alphabet[index]))
+		writingBuffer.WriteString(string(alphabet[index]))
 	}
 
-	form.Add(keyBuffer.String(), valueBuffer.String())
+	form.Add("WritingSection", writingBuffer.String())
 
-	return reflect.ValueOf(invalidKeyValues(form))
+	return reflect.ValueOf(successValues(form))
 }
 
-func TestParsePsychometryAnswers_invalidKey(t *testing.T) {
-	invalidKey := func(psychometry Psychometry, form invalidKeyValues) bool {
-		_, err := ParsePsychometryAnswers(url.Values(form), psychometry)
-		return err == InvalidKey
+func TestParsePsychometryAnswers_success(t *testing.T) {
+	success := func(psychometry Psychometry, form successValues) bool {
+		a, err := ParsePsychometryAnswers(url.Values(form), psychometry)
+		return err == nil && a.WritingSection == url.Values(form).Get("WritingSection")
 	}
 
-	if err := quick.Check(invalidKey, nil); err != nil {
+	if err := quick.Check(success, nil); err != nil {
 		t.Error(err)
 	}
 }
@@ -90,7 +93,7 @@ type missingIndexValues url.Values
 func (missingIndexValues) Generate(rand *rand.Rand, size int) reflect.Value {
 	form := url.Values{}
 
-	entries := [][2]string{{"VSections.0", "0"}, {"VSections", "0"}}
+	entries := [][2]string{{"Sections.0", "0"}, {"Sections", "0"}}
 
 	index := rand.Intn(len(entries))
 	form.Add(entries[index][0], entries[index][1])
@@ -115,7 +118,7 @@ type deformedIndexValues url.Values
 func (deformedIndexValues) Generate(rand *rand.Rand, size int) reflect.Value {
 	form := url.Values{}
 
-	entries := [][2]string{{"VSections[0][Other]", "0"}, {"VSections[Other][0]", "0"}, {"VSections[0][0]", "Other"}}
+	entries := [][2]string{{"Sections[0][Other]", "0"}, {"Sections[Other][0]", "0"}, {"Sections[0][0]", "Other"}}
 
 	index := rand.Intn(len(entries))
 	form.Add(entries[index][0], entries[index][1])
@@ -141,10 +144,10 @@ func (invalidIndexValues) Generate(rand *rand.Rand, size int) reflect.Value {
 	form := url.Values{}
 
 	entries := [][2]string{
-		{"VSections[0][0]", fmt.Sprint(rand.Int() + 4)},
-		{"VSections[0][0]", fmt.Sprint(-1 * rand.Int())},
-		{fmt.Sprintf("VSections[%d][0]", rand.Int()+2), "0"},
-		{fmt.Sprintf("VSections[%d][0]", -1*rand.Int()), "0"},
+		{"Sections[0][0]", fmt.Sprint(rand.Int() + 4)},
+		{"Sections[0][0]", fmt.Sprint(-1 * rand.Int())},
+		{fmt.Sprintf("Sections[%d][0]", rand.Int()+2), "0"},
+		{fmt.Sprintf("Sections[%d][0]", -1*rand.Int()), "0"},
 	}
 
 	index := rand.Intn(len(entries))
