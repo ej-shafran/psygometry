@@ -1,5 +1,4 @@
-{{define "index"}}
-
+{{define "writing-page"}}
 
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
@@ -13,16 +12,51 @@
 </head>
 
 <body>
-	<form hx-post="/answers" hx-swap="afterend" hx-on::after-request="this.reset()">
-		{{template "writing" .WritingSection}}
+	<form hx-post="/answers" hx-target="#target" hx-vals='{"session": "{{.Session}}"}'>
+		<div id="target">
+		{{template "writing" .Psychometry.WritingSection}}
+		</div>
 
-		{{template "sections" .Sections}}
-
-		<button type="submit">הגשה</button>
+		<button type="submit">הבא</button>
 	</form>
+
+	<script>
+		const url = new URL(location);
+		url.searchParams.set("session", "{{.Session}}");
+		history.pushState({}, "", url);
+	</script>
 </body>
 
-</html>
+{{end}}
+
+{{define "section-page"}}
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Psygometry</title>
+
+	<script src="https://unpkg.com/htmx.org@1.9.11"></script>
+</head>
+
+<body>
+	<form hx-post="/answers" hx-target="#target" hx-vals='{"session": "{{.Session}}"}'>
+		<div id="target">
+		{{template "section" index .Psychometry.Sections .Page}}
+		</div>
+
+		<button type="submit">הבא</button>
+	</form>
+
+	<script>
+		const url = new URL(location);
+		url.searchParams.set("session", "{{.Session}}");
+		history.pushState({}, "", url);
+	</script>
+</body>
 
 {{end}}
 
@@ -33,16 +67,6 @@
 
 	<textarea name="WritingSection"></textarea>
 </fieldset>
-
-{{end}}
-
-{{define "sections"}}
-
-{{range .}}
-
-{{template "section" .}}
-
-{{end}}
 
 {{end}}
 
