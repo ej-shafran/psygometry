@@ -1,0 +1,24 @@
+<!-- Multi-choice section of the psychometry -->
+<!-- Receives: `Section` -->
+
+{{define "section"}}
+
+<div>
+	<h2>פרק {{if eq .Kind "V"}} מילולי {{else if eq .Kind "Q"}} כמותי {{else if eq .Kind "E"}} אנגלית {{end}}</h2>
+
+	{{range $j, $q := .Questions}}
+
+	<fieldset>
+		<legend>{{$q.Content}}</legend>
+
+		{{range $k, $o := $q.Options}}
+		<input id="Sections[{{$.Index}}][{{$j}}].Options[{{$k}}]"
+			name="Sections[{{$.Index}}][{{$j}}]" type="radio" value="{{$k}}">
+		<label for="Sections[{{$.Index}}][{{$j}}].Options[{{$k}}]">{{$o}}</label>
+		{{end}}
+	</fieldset>
+
+	{{end}}
+</div>
+
+{{end}}
